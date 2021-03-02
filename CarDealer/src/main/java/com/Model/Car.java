@@ -2,53 +2,73 @@ package com.Model;
 
 public class Car {
     //private static int NextId = 1;
-    private int id;
-    private String Color;
-    private String Miles;
-    private String Model;
-    private String Brand;
+    private String id;
+    private String color;
+    private String miles;
+    private String model;
+    private String brand;
+    private String price;
 
-    public Car(int id, String color, String miles, String model, String brand) {
+    public Car(String id, String model, String brand, String color, String miles ) {
         this.id = id;
-        this.Color = color;
-        this.Miles = miles;
-        this.Model = model;
-        this.Brand = brand;
+        this.color = color;
+        this.miles = miles;
+        this.model = model;
+        this.brand = brand;
     }
 
-    public int getId(){
+    public String getId(){
         return id;
     }
 
     public String getColor() {
-        return Color;
+        return color;
     }
 
     public void setColor(String color) {
-        this.Color = color;
+        this.color = color;
     }
 
     public String getMiles() {
-        return Miles;
+        return miles;
     }
 
     public void setMiles(String miles) {
-        this.Miles = miles;
+        this.miles = miles;
     }
 
     public String getModel() {
-        return Model;
+        return model;
     }
 
     public void setModel(String model) {
-        this.Model = model;
+        this.model = model;
     }
 
     public String getBrand() {
-        return Brand;
+        return brand;
     }
 
     public void setBrand(String brand) {
-        this.Brand = brand;
+        this.brand = brand;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "Serial Number ='" + id + '\'' +
+                ", Color='" + color + '\'' +
+                ", Miles='" + miles + '\'' +
+                ", Model='" + model + '\'' +
+                ", Brand='" + brand + '\'' +
+                '}';
     }
 }

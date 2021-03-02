@@ -5,32 +5,32 @@ import java.util.Arrays;
 public class User {
 
     private int id;
-    private boolean isEmployee;
+    private String isEmployee;
     private String Username;
     private String Password;
     private String Name;
     private String Lastname;
-    private Car[] CarsOwned;
+    //TODO: Is it really necessary to store te cars he owned?
+    //private Car[] CarsOwned;
 
-    public User(int id, boolean isEmployee, String username, String password, String name, String lastname, Car[] carsOwned) {
-        this.id = id;
+    public User(String isEmployee, String username, String password, String name, String lastname/* ,Car[] carsOwned*/) {
         this.isEmployee = isEmployee;
         Username = username;
         Password = password;
         Name = name;
         Lastname = lastname;
-        CarsOwned = carsOwned;
+        //CarsOwned = carsOwned;
     }
 
     public int getId() {
         return id;
     }
 
-    public boolean isEmployee() {
+    public String isEmployee() {
         return isEmployee;
     }
 
-    public void setEmployee(boolean employee) {
+    public void setEmployee(String employee) {
         isEmployee = employee;
     }
 
@@ -66,13 +66,13 @@ public class User {
         Lastname = lastname;
     }
 
-    public Car[] getCarsOwned() {
-        return CarsOwned;
-    }
-
-    public void setCarsOwned(Car[] carsOwned) {
-        CarsOwned = carsOwned;
-    }
+//    public Car[] getCarsOwned() {
+//        return CarsOwned;
+//    }
+//
+//    public void setCarsOwned(Car[] carsOwned) {
+//        CarsOwned = carsOwned;
+//    }
 
     @Override
     public String toString() {
