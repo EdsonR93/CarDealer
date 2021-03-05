@@ -21,7 +21,7 @@ public class UserServices {
     }
 
     public User showRegisterForm (){
-        String isEmployee = "False";
+        boolean isEmployee = false;
         String emp, username, password, name, lastname;
         //Car[] carsOwned = {};
 
@@ -48,10 +48,10 @@ public class UserServices {
             System.out.println("Are you an employee of the company?:");
             emp = scan.nextLine();
             if(emp.equalsIgnoreCase("Y") || emp.equalsIgnoreCase("Yes")){
-                isEmployee = "1";
+                isEmployee = true;
                 keepAsking = false;
             }else if (emp.equalsIgnoreCase("N") || emp.equalsIgnoreCase("no")){
-                isEmployee = "0";
+                isEmployee = false;
                 keepAsking = false;
             }else{
                 keepAsking = true;
@@ -60,10 +60,4 @@ public class UserServices {
 
         return new User(isEmployee,username,password,name,lastname);
     }
-
-    public void moveToUserMenu(){
-
-    }
-
-
 }

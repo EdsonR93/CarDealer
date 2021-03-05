@@ -1,8 +1,8 @@
 package com.database;
 
-import com.Model.Offer;
 import com.Model.User;
 import com.Model.Car;
+import sun.security.x509.SerialNumber;
 //import java.util.function. TODO: see if there is a function I could use
 
 import java.sql.*;
@@ -44,7 +44,7 @@ public class TempDB{
         return true;
     }
 
-    private boolean checkForCar(String SN){
+    public boolean checkForCar(String SN){
         try{
             ResultSet result = statement.executeQuery("SELECT car_id FROM cars WHERE car_id='"+SN+"';");
             return result.next();
@@ -56,63 +56,46 @@ public class TempDB{
         return true;
     }
 
-    public boolean[] Login(String username, String pass) {
+    public User Login(String username, String pass) {
         try {
-            ResultSet result = statement.executeQuery("SELECT is_employee,username,password FROM users WHERE username='" + username + "' AND password ='" + pass + "';");
+            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username='" + username + "' AND password ='" + pass + "';");
             if(result.next()){
                 System.out.println("Logged in successfully");
-                //System.out.println(result.getString("username")+" "+result.getString("password")); Debugging line
-                return new boolean[]{true, result.getBoolean("is_employee")};
+                return new User(result.getInt("user_id"), result.getBoolean("is_employee"),result.getString("username"),
+                        result.getString("password"),result.getString("name"), result.getString("lastname"));
+
             }else{
                 System.out.println("Username or name ar incorrect");
-                return new boolean[]{false,false};
+                return null;
             }
         }catch(SQLException sqlex){
             System.out.println("Something went wrong at the connection");
             sqlex.printStackTrace();
         }
 
-        return new boolean[]{false,false};
+        return null;
     }
 
-    public String addNewUser(User u){
+    public void addNewUser(User u){
         try {
-            if (c1 != null) {
-                statement.execute("INSERT INTO users (is_employee, username, password," +
-                        " name, lastname ) values ('" + u.isEmployee() + "', '" +
-                        u.getUsername() + "', '" + u.getPassword() + "', '" + u.getName() + "', '" +
-                        u.getLastname() + "');");
-
-                if(checkForUsername(u.getUsername()))
-                    return "Successful";
-                else
-                    return  "Could not add to DB";
-
-            }
-            else
-                System.out.println("Connection not found!!");
+            statement.executeUpdate("INSERT INTO users (is_employee, username, password," +
+                    " name, lastname ) values ('" + u.isEmployee() + "', '" +
+                    u.getUsername() + "', '" + u.getPassword() + "', '" + u.getName() + "', '" +
+                    u.getLastname() + "');");
 
         }catch(SQLException e){
             System.out.println("Something went wrong at the connection");
             e.printStackTrace();
         }
-
-        return "Reached end of addNewUser, I don't know what happen";
     }
 
-    public String addNewCar(Car c){
+    public void addNewCar(Car c){
         try{
-            if(c1 != null){
-                statement.execute("INSERT INTO cars (car_id, color, miles, model, brand) values(" +
-                        "'" +c.getId() + "', ' " + c.getColor() + "', '" + c.getMiles() + "', '" +
-                        c.getModel() + "', '" + c.getBrand() + "');");
 
-                if(checkForCar(c.getId()))
-                    return "Successful";
-                else
-                    return  "Could not add to DB";
+            statement.executeUpdate("INSERT INTO cars (car_id, color, miles, model, brand, price, user_id) values(" +
+                    "'" +c.getId() + "', ' " + c.getColor() + "', '" + c.getMiles() + "', '" +
+                    c.getModel() + "', '" + c.getBrand() + "');");
 
-            }
         }catch (SQLException ex){
             System.out.println("Something wrong at SQL");
             //ex.printStackTrace();
@@ -120,21 +103,17 @@ public class TempDB{
             System.out.println("Something wrong while adding the car method");
             //ex.printStackTrace();
         }
-
-        return "Reached end of addNewCar, I don't know what happen";
     }
 
     public String deleteCarBySerialNumber(String SerialNumber){
         try {
-            if(c1 != null) {
-                statement.execute("DELETE FROM cars WHERE car_id = '" + SerialNumber +"';");
 
-                if(checkForCar(SerialNumber))
-                    return "Couldn't delete";
-                else
-                    return  "Successfully deleted car";
+            statement.executeUpdate("DELETE FROM cars WHERE car_id = '" + SerialNumber +"';");
 
-            }
+            if(checkForCar(SerialNumber))
+                return "Couldn't delete";
+            else
+                return  "Successfully deleted car";
 
         }catch(SQLException ex) {
             //ex.printStackTrace();
@@ -144,6 +123,18 @@ public class TempDB{
         }
 
         return "Couldn't delete, end of method.";
+    }
+
+    public ResultSet fetchAllCars(int i){
+        try{
+           return statement.executeQuery("Select * from cars where user_id = '"+i+"'");
+
+        }catch(SQLException ex){
+            System.out.println("couldnt fetch cars");
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
     }
 
 }

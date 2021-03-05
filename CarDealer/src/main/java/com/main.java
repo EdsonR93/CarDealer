@@ -2,7 +2,7 @@ package com;
 
 import com.Model.User;
 import com.database.TempDB;
-import com.ui.EmployeeServices;
+import com.ui.EmployeeDriver;
 import com.ui.UserServices;
 import com.ui.Menus;
 
@@ -16,58 +16,39 @@ public class main {
         TempDB DB = new TempDB();
         Scanner scan = new Scanner(System.in);
         UserServices userServices = new UserServices();
-        EmployeeServices employeeServices = new EmployeeServices();
+        EmployeeDriver employeeServices = new EmployeeDriver();
         Menus menus = new Menus();
 
-        int userInput;
-//        String userString;
 
+        int userInput;
         do{
            menus.printWelcomeMenu();
 
            try{
-
-               //TODO: Rewrite this code later /// Done, save in case of any mistake
-//               userString = scan.nextLine();
-//
-//               if(userString.equals("1"))
-//                   userInput = 1;
-//               else if(userString.equals("2"))
-//                   userInput = 2;
-//               else if(userString.equals("3"))
-//                   userInput = 3;
-//               else
-//                   userInput = 4;
-               //Till here
-
                userInput = scan.nextInt();
 
                switch (userInput){
                    case 1:{
                        boolean keepTrying;
-                       boolean[] loginResult;
+
                        String tryAgain;
                        do{
                            String[] newUserData = userServices.showLoginForm();
-                           loginResult = DB.Login(newUserData[0],newUserData[1]);
+                           User user = DB.Login(newUserData[0],newUserData[1]);
+                           if(user != null && user.isEmployee()){
+                               //System.out.println("Logged in successfully");
+                               employeeServices.moveToEmployeeMenu(user);
+                               keepTrying = false;
 
-                           if(loginResult[0])
-                           {
-                               if(loginResult[1]){
-                                   //TODO: Redirect to emp menu
-                                   System.out.println("its an employee");
-                                   employeeServices.moveToEmployeeMenu();
-
-                               }else{
-                                   //TODO: Redirect to User menus
-                                   System.out.println("not an employee");
-                               }
+                           }else if (user!=null){
 
                                keepTrying = false;
-                           }else{
+                           }else {
+                               System.out.println("Username or name ar incorrect");
                                System.out.println("try again? y/n");
                                tryAgain = scan.nextLine();
                                keepTrying = tryAgain.equalsIgnoreCase("y");
+
                            }
                        }while (keepTrying);
 
@@ -75,7 +56,11 @@ public class main {
                    }
                    case 2:{
                        User newUser = userServices.showRegisterForm();
-                       System.out.println(DB.addNewUser(newUser));
+                       DB.addNewUser(newUser);
+                       if(DB.checkForUsername(newUser.getUsername()))
+                           System.out.println("Successful");
+                       else
+                           System.out.println("Could not add to DB");
                        break;
                    }
                    case 3:{

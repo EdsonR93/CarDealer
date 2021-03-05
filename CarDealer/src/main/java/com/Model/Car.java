@@ -8,13 +8,16 @@ public class Car {
     private String model;
     private String brand;
     private String price;
+    private String user_id;
 
-    public Car(String id, String model, String brand, String color, String miles ) {
+    public Car(String id, String model, String brand, String color, String miles, String price, String user_id ) {
         this.id = id;
         this.color = color;
         this.miles = miles;
         this.model = model;
         this.brand = brand;
+        this.price = price;
+        this.user_id = user_id;
     }
 
     public String getId(){
@@ -59,6 +62,14 @@ public class Car {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     @Override
