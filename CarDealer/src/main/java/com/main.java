@@ -3,6 +3,7 @@ package com;
 import com.Model.User;
 import com.database.TempDB;
 import com.ui.EmployeeDriver;
+import com.ui.UserDriver;
 import com.ui.UserServices;
 import com.ui.Menus;
 
@@ -17,6 +18,7 @@ public class main {
         Scanner scan = new Scanner(System.in);
         UserServices userServices = new UserServices();
         EmployeeDriver employeeServices = new EmployeeDriver();
+        UserDriver userDriver = new UserDriver();
         Menus menus = new Menus();
 
 
@@ -41,7 +43,7 @@ public class main {
                                keepTrying = false;
 
                            }else if (user!=null){
-
+                               userDriver.MoveToUserMenu(user);
                                keepTrying = false;
                            }else {
                                System.out.println("Username or name ar incorrect");

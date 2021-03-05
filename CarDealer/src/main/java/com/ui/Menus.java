@@ -18,7 +18,7 @@ public class Menus {
     }
 
     public void printUserCarsMenu(){
-        System.out.println("1.- Buy a car");
+        System.out.println("1.- Make an Offer for a car");
         System.out.println("2.- Go Back");
         System.out.println("Option (1 or 2):");
     }

@@ -2,17 +2,14 @@ package com.database;
 
 import com.Model.User;
 import com.Model.Car;
-import sun.security.x509.SerialNumber;
 //import java.util.function. TODO: see if there is a function I could use
 
 import java.sql.*;
-import java.util.Scanner;
 
 public class TempDB{
 
     Connection c1 = null;
     Statement statement = null;
-    Scanner scan = new Scanner(System.in); //TODO: Just for debugging, remove later
 
 
     public TempDB(){
@@ -25,8 +22,8 @@ public class TempDB{
             c1 = DriverManager.getConnection(url, user, pass);
             statement = c1.createStatement();
 
-        }catch(SQLException sqlex){
-
+        }catch(SQLException sqlEx){
+            sqlEx.printStackTrace();
         }catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -34,12 +31,12 @@ public class TempDB{
 
     public boolean checkForUsername(String newUsername){
         try{
-            ResultSet result = statement.executeQuery("SELECT username FROM users WHERE username=\'"+newUsername+"\';");
+            ResultSet result = statement.executeQuery("SELECT username FROM users WHERE username='"+newUsername+"';");
             return result.next();
 
-        }catch(SQLException sqlex){
+        }catch(SQLException sqlEx){
             System.out.println("Could not verify user, connection failed?");
-            sqlex.printStackTrace();
+            sqlEx.printStackTrace();
         }
         return true;
     }
@@ -68,9 +65,9 @@ public class TempDB{
                 System.out.println("Username or name ar incorrect");
                 return null;
             }
-        }catch(SQLException sqlex){
+        }catch(SQLException sqlEx){
             System.out.println("Something went wrong at the connection");
-            sqlex.printStackTrace();
+            sqlEx.printStackTrace();
         }
 
         return null;
@@ -130,7 +127,7 @@ public class TempDB{
            return statement.executeQuery("Select * from cars where user_id = '"+i+"'");
 
         }catch(SQLException ex){
-            System.out.println("couldnt fetch cars");
+            System.out.println("could not fetch cars");
         }catch(Exception ex){
             ex.printStackTrace();
         }
