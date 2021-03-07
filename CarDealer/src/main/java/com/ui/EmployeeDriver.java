@@ -1,11 +1,11 @@
 package com.ui;
 
 import com.Collection.CarHashSet;
+import com.Collection.OfferHashSet;
 import com.Model.Car;
 import com.Model.User;
-import com.database.TempDB;
+import com.database.DataBaseServices;
 
-import java.sql.ResultSet;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -15,10 +15,11 @@ public class EmployeeDriver {
     Scanner scan = new Scanner(System.in);
     Menus menus = new Menus();
     CarServices carServices = new CarServices();
-    TempDB DB = new TempDB();
+    EmployeeServices employeeServices = new EmployeeServices();
+
+    DataBaseServices DB = new DataBaseServices();
 
     public void moveToEmployeeMenu(User user){
-        //boolean doNotExit = true;
         int userInput;
 
         do {
@@ -49,7 +50,6 @@ public class EmployeeDriver {
                             System.out.println(DB.deleteCarBySerialNumber(SN));
 
                         }else{
-                            //TODO:Show all cars so it can look for SN
                             CarHashSet cars =  carServices.getCars(0);//0 is the Id for the company/CarDealer
                             System.out.println(cars.toString());
                             System.out.println("Enter the Serial number of the car to delete:");
@@ -60,7 +60,11 @@ public class EmployeeDriver {
                         break;
                     }
                     case 3:{
-                        //TODO:Create UserDriver so you can make offers for cars, then implement take offers for employee
+                        OfferHashSet offers = employeeServices.getOffers();
+                        System.out.println(offers);
+
+                        employeeServices.takeOffer(offers);
+                        break;
                     }
                     case 4:{
                         return;
@@ -69,7 +73,6 @@ public class EmployeeDriver {
                 }
 
             }catch(InputMismatchException e){
-                //e.printStackTrace();
                 System.out.println("Not a number");
                 scan.nextLine();
             }catch(NoSuchElementException e){

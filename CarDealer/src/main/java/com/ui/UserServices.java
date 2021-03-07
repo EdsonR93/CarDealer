@@ -1,13 +1,13 @@
 package com.ui;
 
 import com.Model.User;
-import com.database.TempDB;
+import com.database.DataBaseServices;
 
 import java.util.Scanner;
 
 public class UserServices {
     Scanner scan = new Scanner(System.in);
-    TempDB DB = new TempDB();
+    DataBaseServices DB = new DataBaseServices();
     
     public String[] showLoginForm (){
         String username,password;

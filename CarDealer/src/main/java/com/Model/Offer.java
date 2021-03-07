@@ -1,31 +1,30 @@
 package com.Model;
 
 public class Offer {
-    private User u;
-    private Car c;
+    private final int offerId;
+    private final String userId;
+    private final String carId;
     private float amountOffered = 0;
 
-    public Offer(User u, Car c, float ao) {
-        this.u = u;
-        this.c = c;
-        this.amountOffered = ao;
+    public Offer(int offerId, String userId, String carId, float amountOffered) {
+        this.offerId = offerId;
+        this.userId = userId;
+        this.carId = carId;
+        this.amountOffered = amountOffered;
     }
 
-    public User getU() {
-        return u;
+    public int getOfferId() {
+        return offerId;
     }
 
-    public void setU(User u) {
-        this.u = u;
+    public String getUserId() {
+        return userId;
     }
 
-    public Car getC() {
-        return c;
+    public String getCarId() {
+        return carId;
     }
 
-    public void setC(Car c) {
-        this.c = c;
-    }
 
     public float getAmountOffered() {
         return amountOffered;
@@ -33,5 +32,15 @@ public class Offer {
 
     public void setAmountOffered(float amountOffered) {
         this.amountOffered = amountOffered;
+    }
+
+    @Override
+    public String toString() {
+        return "Offer{" +
+                "offerId='" + offerId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", carId='" + carId + '\'' +
+                ", amountOffered=" + amountOffered +
+                '}';
     }
 }

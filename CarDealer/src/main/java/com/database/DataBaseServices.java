@@ -1,18 +1,19 @@
 package com.database;
 
+import com.Model.Offer;
 import com.Model.User;
 import com.Model.Car;
 //import java.util.function. TODO: see if there is a function I could use
 
 import java.sql.*;
 
-public class TempDB{
+public class DataBaseServices {
 
     Connection c1 = null;
     Statement statement = null;
 
 
-    public TempDB(){
+    public DataBaseServices(){
         try{
             Class.forName("org.postgresql.Driver");
             String pass = "GYBChicos";
@@ -132,6 +133,46 @@ public class TempDB{
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public ResultSet fetchAllOffers (){
+        try{
+            return statement.executeQuery("Select * from offers where accepted ='false' and pending = 'true';");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean addNewOffer(String carId, String userId, String offer){
+        try{
+            statement.executeUpdate("INSERT INTO offers VALUES ('"+carId+"','"+userId+"','"+offer+"');");
+            //TODO: Add a way to verify
+            return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public String acceptOffer(Offer offer){
+        try{
+            statement.executeUpdate("UPDATE offers SET accepted=true, pending=false WHERE offer_id ='"+offer.getOfferId()+"';");
+            statement.executeUpdate("UPDATE cars SET user_id = '"+offer.getUserId()+"', price = '"+offer.getAmountOffered()+"' WHERE car_id ='"+offer.getCarId()+ "';");
+
+            return "Successfully";
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return "Could not update DB";
     }
 
 }

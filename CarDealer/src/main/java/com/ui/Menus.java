@@ -26,7 +26,7 @@ public class Menus {
     public void printEmployeeMenu(){
         System.out.println("1.- Add new car");
         System.out.println("2.- delete a car");
-        System.out.println("3.- Take an offer");
+        System.out.println("3.- Review offers");
         System.out.println("4.- Exit");
         System.out.println("Option (1,2,3 or 4): ");
     }

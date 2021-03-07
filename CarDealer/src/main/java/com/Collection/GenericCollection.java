@@ -12,22 +12,22 @@ import com.Model.Car;
  * View all elements of the collection
  *
  */
-public abstract class GenericCollection {
+public abstract class GenericCollection<T> {
 
     /**
      * Optional size number for non expandable subclasses
      */
     protected int maxSize;
 
-    public abstract Car get(Car c);
-
-    public abstract void add(Car c);
+    public abstract Object get(T c);
+    public abstract boolean remove(T c);
+    public abstract void add(T c);
 
     public abstract int size();
 
-    public abstract boolean remove(Car c);
+    public abstract Object getById(String id);
 
-    public abstract Car next();
+    public abstract Object next();
 
     public abstract String toString();
 

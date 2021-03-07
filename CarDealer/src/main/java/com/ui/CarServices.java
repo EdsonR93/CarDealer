@@ -3,7 +3,7 @@ package com.ui;
 import com.Collection.CarHashSet;
 import com.Model.Car;
 import com.Model.User;
-import com.database.TempDB;
+import com.database.DataBaseServices;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class CarServices {
     Scanner scan = new Scanner(System.in);
-    TempDB DB = new TempDB();
+    DataBaseServices DB = new DataBaseServices();
 
     public Car showAddNewCarForm(User u){
         String id,model,brand,miles,color,price;
@@ -44,8 +44,8 @@ public class CarServices {
 
         try{
             while(rs.next()){
-                cars.add(new Car(rs.getString("car_id"),rs.getString("color"),rs.getString("miles"),
-                        rs.getString("model"),rs.getString("brand"),rs.getString("price"),
+                cars.add(new Car(rs.getString("car_id"),rs.getString("model"),rs.getString("brand"),
+                        rs.getString("color"),rs.getString("miles"),rs.getString("price"),
                         rs.getString("user_id")));
 
             }

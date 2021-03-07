@@ -1,19 +1,17 @@
 package com.Collection;
 
 import com.Model.Car;
+import com.Model.Offer;
 
-
-public class CarHashSet extends GenericCollection<Car> {
-    //TODO: this class needs an Iterator!!
+public class OfferHashSet extends GenericCollection<Offer> {
     private static final int INITIAL_CAPACITY = 8;
     private int size;
     private int i;
-    private final MyNode<Car>[] nodes;
-    private MyNode<Car> currentIndex;
-    private MyNode<Car> prevIndex;
+    private final Node<Offer>[] nodes;
+    private Node<Offer> currentIndex;
+    private Node<Offer> prevIndex;
 
-
-    public CarHashSet(){
+    public OfferHashSet() {
         this(INITIAL_CAPACITY);
         this.size = 0;
         i =0;
@@ -21,61 +19,43 @@ public class CarHashSet extends GenericCollection<Car> {
         prevIndex = null;
     }
 
-    public CarHashSet(int capacity){
-        this.nodes = new MyNode[capacity];
+    public OfferHashSet(int capacity) {
+        this.nodes = new Node[capacity];
     }
 
     @Override
-    boolean isEmpty() {
-        return this.size == 0;
-    }
-
-    @Override
-    public int size() {
-        return this.size;
-    }
-
-    //why is not override?
-    public void add(Car c){
-        int index = c.hashCode() % nodes.length;
-
-        MyNode<Car> current = nodes[index];
-        MyNode<Car> newNode = new MyNode<Car>(c);
+    public Offer get(Offer o) {
+        int index = o.hashCode() % nodes.length;
+        Node<Offer> current = nodes[index];
 
         if(current == null){ // the list is empty
-            nodes[index] = newNode;
-            size++;
-            return;
+            return null;
         }
         while(current.next != null){
-            if(current.data.equals(c)){
-                return;
+            if(current.data.equals(o)){
+                return current.data;
             }
             current = current.next;
         }
-
-        if(!current.data.equals(c)){
-            current.next = newNode;
-            size++;
-            return;
+        if(current.data.equals(o)){//to check the final node
+            return current.data;
         }
-
-        System.out.println("Duplicate value");
+        return null;
     }
 
     @Override
-    public boolean remove(Car c) {
-        int index = c.hashCode() % nodes.length;
+    public boolean remove(Offer o) {
+        int index = o.hashCode() % nodes.length;
 
-        MyNode<Car> current = nodes[index];
-        MyNode<Car> prevNode = null;
+        Node<Offer> current = nodes[index];
+        Node<Offer> prevNode = null;
 
         //TODO: provide more semantic messages when converting to boolean
         if(current == null){ // the list is empty
             return true;
         }
         while(current.next != null){
-            if(current.data.equals(c)){ // current is the node we want to remove
+            if(current.data.equals(o)){ // current is the node we want to remove
                 if(prevNode != null){
                     prevNode.next = current.next;
                 }else{
@@ -87,13 +67,13 @@ public class CarHashSet extends GenericCollection<Car> {
             prevNode = current;
             current = current.next;
         }
-        if(current.data.equals(c)){//to check the final node
+        if(current.data.equals(o)){//to check the final node
             if (prevNode != null) {
                 prevNode.next = null;
                 size--;
                 return true;
             }else{
-                System.out.println("something very bad happened");
+                System.out.println("Couldnt remove from OfferHashSet");
                 return false;
             }
         }
@@ -101,53 +81,58 @@ public class CarHashSet extends GenericCollection<Car> {
     }
 
     @Override
-    protected void clear() {
-        for (MyNode<Car> n : nodes ){
-            n = null;
-        }
-        size = 0;
-    }
+    public void add(Offer o) {
+        int index = o.hashCode() % nodes.length;
 
-    @Override
-    public Car get(Car c) { //TODO: Implement a getbyID to reduce DB querys
-
-        int index = c.hashCode() % nodes.length;
-        MyNode<Car> current = nodes[index];
+        Node<Offer> current = nodes[index];
+        Node<Offer> newNode = new Node<Offer>(o);
 
         if(current == null){ // the list is empty
-            return null;
+            nodes[index] = newNode;
+            size++;
+            return;
         }
         while(current.next != null){
-            if(current.data.equals(c)){
-                return current.data;
+            if(current.data.equals(o)){
+                return;
             }
             current = current.next;
         }
-        if(current.data.equals(c)){//to check the final node
-           return current.data;
+
+        if(!current.data.equals(o)){
+            current.next = newNode;
+            size++;
+            return;
         }
-        return null;
+
+        System.out.println("Duplicate value");
     }
 
     @Override
-    public Car getById(String id){
-        for(MyNode<Car> n: nodes){
+    public int size() {
+        return this.size;
+    }
+
+    @Override
+    public Offer getById(String id) {
+        for(Node<Offer> n: nodes){
             if(n!=null){
-                MyNode<Car> iterator = n;
+                Node<Offer> iterator = n;
                 while (iterator.next!=null){
-                    if(iterator.data.getId().equalsIgnoreCase(id))
+                    if(String.valueOf(iterator.data.getOfferId()).equalsIgnoreCase(id))
                         return iterator.data;
                     iterator = iterator.next;
                 }
 
-                if(iterator.data.getId().equalsIgnoreCase(id))
+                if(String.valueOf(iterator.data.getOfferId()).equalsIgnoreCase(id))
                     return iterator.data;
             }
         }
         return null;
     }
+
     @Override
-    public Car next() {
+    public Offer next() {
 
         if(size ==0)
             return null;
@@ -183,42 +168,52 @@ public class CarHashSet extends GenericCollection<Car> {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
-        int x =0;
-        for(MyNode<Car> n: nodes){
+        int x = 0;
+        for (Node<Offer> n : nodes) {
             out.append("Node ").append(x++).append("\n\t"); //This line is for debugging purposes!
 
-            if(n!=null){
-                MyNode<Car> iterator = n;
-                while (iterator.next!=null){
+            if (n != null) {
+                Node<Offer> iterator = n;
+                while (iterator.next != null) {
                     out.append(iterator.data.toString()).append("\n\t");
                     iterator = iterator.next;
                 }
 
                 out.append(iterator.data.toString()).append("\n");
-            }else{
+            } else {
                 out.append("\n");
             }
         }
         return out.toString();
     }
+
+    @Override
+    boolean isEmpty() {
+        return this.size == 0;
+    }
+
+    @Override
+    protected void clear() {
+        for (Node<Offer> n : nodes ){
+            n = null;
+        }
+        size = 0;
+    }
 }
-
-class MyNode<T> {
+class Node<T> {
     T data;
-    MyNode<T> next;
+    Node<T> next;
 
-    public MyNode(T data) {
+    public Node(T data) {
         this.data = data;
         this.next = null;
     }
 
     @Override
     public String toString() {
-        return "MyNode{" +
+        return "Node{" +
                 "data=" + data +
                 ", next=" + next +
                 '}';
     }
 }
-
-

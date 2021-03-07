@@ -16,6 +16,7 @@ public class Car {
         this.miles = miles;
         this.model = model;
         this.brand = brand;
+        //TODO: ADD Make to model and DB table
         this.price = price;
         this.user_id = user_id;
     }
@@ -80,6 +81,7 @@ public class Car {
                 ", Miles='" + miles + '\'' +
                 ", Model='" + model + '\'' +
                 ", Brand='" + brand + '\'' +
+                ", Price='" + price + '\'' +
                 '}';
     }
 }

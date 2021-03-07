@@ -1,24 +1,22 @@
 package com;
 
 import com.Model.User;
-import com.database.TempDB;
+import com.database.DataBaseServices;
 import com.ui.EmployeeDriver;
-import com.ui.UserDriver;
+import com.ui.CustomerDriver;
 import com.ui.UserServices;
 import com.ui.Menus;
 
-import java.util.InputMismatchException;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 public class main {
 
     public static void main(String[] args) {
-        TempDB DB = new TempDB();
+        DataBaseServices DB = new DataBaseServices();
         Scanner scan = new Scanner(System.in);
         UserServices userServices = new UserServices();
         EmployeeDriver employeeServices = new EmployeeDriver();
-        UserDriver userDriver = new UserDriver();
+        CustomerDriver customerDriver = new CustomerDriver();
         Menus menus = new Menus();
 
 
@@ -43,7 +41,7 @@ public class main {
                                keepTrying = false;
 
                            }else if (user!=null){
-                               userDriver.MoveToUserMenu(user);
+                               customerDriver.MoveToUserMenu(user);
                                keepTrying = false;
                            }else {
                                System.out.println("Username or name ar incorrect");
