@@ -52,7 +52,7 @@ public class EmployeeServices {
             System.out.println("Enter Offer ID to accept offer:");
             int offerId = scan.nextInt();
             scan.nextLine();
-            Offer of = offers.getById(String.valueOf(offerId));
+            Offer of = offers.getById(offerId);
 
             if(of !=null){
                 System.out.println(DB.acceptOffer(of));
