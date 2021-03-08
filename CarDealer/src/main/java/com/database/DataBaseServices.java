@@ -12,8 +12,7 @@ public class DataBaseServices {
     Connection c1 = null;
     Statement statement = null;
 
-
-    public DataBaseServices(){
+    private DataBaseServices(){
         try{
             Class.forName("org.postgresql.Driver");
             String pass = "GYBChicos";
@@ -30,6 +29,15 @@ public class DataBaseServices {
         }
     }
 
+    private static DataBaseServices instance;
+
+    public static DataBaseServices getInstance(){
+        if(instance == null){
+            instance = new DataBaseServices();
+        }
+        return instance;
+    }
+
     public boolean checkForUsername(String newUsername){
         try{
             ResultSet result = statement.executeQuery("SELECT username FROM users WHERE username='"+newUsername+"';");
@@ -42,13 +50,12 @@ public class DataBaseServices {
         return true;
     }
 
-    public boolean checkForCar(String SN){
+    public boolean checkForCar(int SN){
         try{
             ResultSet result = statement.executeQuery("SELECT car_id FROM cars WHERE car_id='"+SN+"';");
             return result.next();
 
         }catch(SQLException ex){
-            System.out.println("Could not verify user, connection failed?"); //TODO: write a better response
             ex.printStackTrace();
         }
         return true;
@@ -58,12 +65,10 @@ public class DataBaseServices {
         try {
             ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username='" + username + "' AND password ='" + pass + "';");
             if(result.next()){
-                System.out.println("Logged in successfully");
                 return new User(result.getInt("user_id"), result.getBoolean("is_employee"),result.getString("username"),
                         result.getString("password"),result.getString("name"), result.getString("lastname"));
 
             }else{
-                System.out.println("Username or name ar incorrect");
                 return null;
             }
         }catch(SQLException sqlEx){
@@ -91,36 +96,28 @@ public class DataBaseServices {
         try{
 
             statement.executeUpdate("INSERT INTO cars (car_id, color, miles, model, brand, price, user_id) values(" +
-                    "'" +c.getId() + "', ' " + c.getColor() + "', '" + c.getMiles() + "', '" +
+                    "'" +c.getSerialNum() + "', ' " + c.getColor() + "', '" + c.getMiles() + "', '" +
                     c.getModel() + "', '" + c.getBrand() + "');");
 
         }catch (SQLException ex){
             System.out.println("Something wrong at SQL");
-            //ex.printStackTrace();
         }catch(Exception ex){
             System.out.println("Something wrong while adding the car method");
-            //ex.printStackTrace();
         }
     }
 
-    public String deleteCarBySerialNumber(String SerialNumber){
+    public boolean deleteCarBySerialNumber(int SerialNumber){
         try {
-
             statement.executeUpdate("DELETE FROM cars WHERE car_id = '" + SerialNumber +"';");
-
-            if(checkForCar(SerialNumber))
-                return "Couldn't delete";
-            else
-                return  "Successfully deleted car";
+            if(!checkForCar(SerialNumber))
+                return true;
 
         }catch(SQLException ex) {
-            //ex.printStackTrace();
             System.out.println("SQL exception at deleting");
         }catch (Exception ex){
             ex.printStackTrace();
         }
-
-        return "Couldn't delete, end of method.";
+        return false;
     }
 
     public ResultSet fetchAllCars(int i){
@@ -146,9 +143,9 @@ public class DataBaseServices {
         return null;
     }
 
-    public boolean addNewOffer(String carId, String userId, String offer){
+    public boolean addNewOffer(int carId, int userId, float offer, int months){
         try{
-            statement.executeUpdate("INSERT INTO offers VALUES ('"+carId+"','"+userId+"','"+offer+"');");
+            statement.executeUpdate("INSERT INTO offers VALUES ('"+carId+"','"+userId+"','"+offer+"','"+months+"');");
             //TODO: Add a way to verify
             return true;
         } catch (SQLException ex) {
@@ -160,19 +157,19 @@ public class DataBaseServices {
         return false;
     }
 
-    public String acceptOffer(Offer offer){
+    public boolean acceptOffer(Offer offer){
         try{
             statement.executeUpdate("UPDATE offers SET accepted=true, pending=false WHERE offer_id ='"+offer.getOfferId()+"';");
-            statement.executeUpdate("UPDATE cars SET user_id = '"+offer.getUserId()+"', price = '"+offer.getAmountOffered()+"' WHERE car_id ='"+offer.getCarId()+ "';");
+            statement.executeUpdate("UPDATE cars SET user_id = '"+offer.getUserId()+"', price = '"+offer.getAmountOffered()+"' WHERE car_id ='"+offer.getCarSerialNum()+ "';");
 
-            return "Successfully";
+            return true;
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }catch (Exception ex){
             ex.printStackTrace();
         }
-        return "Could not update DB";
+        return false;
     }
 
 }

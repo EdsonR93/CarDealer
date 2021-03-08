@@ -25,7 +25,7 @@ public abstract class GenericCollection<T> {
 
     public abstract int size();
 
-    public abstract Object getById(String id);
+    public abstract Object getById(int id);
 
     public abstract Object next();
 

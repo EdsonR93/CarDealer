@@ -1,51 +1,59 @@
 package com.Model;
 
 public class Car {
-    //private static int NextId = 1;
-    private String id;
-    private String color;
-    private String miles;
-    private String model;
+    private final int serialNum;
+    private int model;
     private String brand;
-    private String price;
-    private String user_id;
+    private String make;
+    private int miles;
+    private String color;
+    private float price;
+    private int ownerId;
 
-    public Car(String id, String model, String brand, String color, String miles, String price, String user_id ) {
-        this.id = id;
+    public Car(int serialNum, int model, String brand, String make, String color, int miles, float price, int ownerId) {
+        this.serialNum = serialNum;
         this.color = color;
         this.miles = miles;
         this.model = model;
         this.brand = brand;
-        //TODO: ADD Make to model and DB table
+        this.make = make;
         this.price = price;
-        this.user_id = user_id;
+        this.ownerId = ownerId;
     }
 
-    public String getId(){
-        return id;
+    public int getSerialNum(){
+        return serialNum;
     }
 
     public String getColor() {
         return color;
     }
 
+    public String getMake() {
+        return make;
+    }
+
+    public void setMake(String make) {
+        this.make = make;
+    }
+
     public void setColor(String color) {
         this.color = color;
     }
 
-    public String getMiles() {
+    public int getMiles() {
         return miles;
     }
 
-    public void setMiles(String miles) {
+    public void setMiles(int miles) {
         this.miles = miles;
     }
 
-    public String getModel() {
+    public int getModel() {
         return model;
     }
 
-    public void setModel(String model) {
+    public void setModel(int model) {
         this.model = model;
     }
 
@@ -57,31 +65,33 @@ public class Car {
         this.brand = brand;
     }
 
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
-    public String getUser_id() {
-        return user_id;
+    public int getOwnerId() {
+        return ownerId;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
     }
 
     @Override
     public String toString() {
         return "Car{" +
-                "Serial Number ='" + id + '\'' +
-                ", Color='" + color + '\'' +
-                ", Miles='" + miles + '\'' +
-                ", Model='" + model + '\'' +
-                ", Brand='" + brand + '\'' +
-                ", Price='" + price + '\'' +
+                "id=" + serialNum +
+                ", model=" + model +
+                ", brand='" + brand + '\'' +
+                ", make='" + make + '\'' +
+                ", miles=" + miles +
+                ", color='" + color + '\'' +
+                ", price=" + price +
+                ", owner_id=" + ownerId +
                 '}';
     }
 }

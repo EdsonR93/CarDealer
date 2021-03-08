@@ -8,16 +8,33 @@ import java.util.Scanner;
 
 public class CustomerServices {
     Scanner scan = new Scanner(System.in);
-    DataBaseServices DB = new DataBaseServices();
+    DataBaseServices DB = DataBaseServices.getInstance();
+
+    private CustomerServices(){}
+
+    private static CustomerServices instance;
+
+    public static CustomerServices getInstance(){
+        if(instance == null){
+            instance = new CustomerServices();
+        }
+        return instance;
+    }
 
     public void MakeAnOffer(Car car, User user) {
-        String offer;
+        float offer = 0f;
+        int months =0;
 
         System.out.println(car.toString());
         System.out.println("How much do you want to offer?");
-        offer = scan.nextLine();
+        offer = scan.nextFloat();
+        scan.nextLine();
+        System.out.println("How many months do you want to set the lease to?");
+        months = scan.nextInt();
+        scan.nextLine();
 
-        if(DB.addNewOffer(car.getId(),String.valueOf(user.getId()),offer)){
+
+        if(DB.addNewOffer(car.getSerialNum(),user.getId(),offer,months)){
             System.out.println("Offer made successfully");
             System.out.println("Pending for approval");
         }else{

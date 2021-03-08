@@ -1,6 +1,7 @@
 package com.ui;
 
 import com.Collection.OfferHashSet;
+import com.Model.Car;
 import com.Model.Offer;
 import com.database.DataBaseServices;
 
@@ -11,16 +12,27 @@ import java.util.Scanner;
 
 public class EmployeeServices {
     Scanner scan = new Scanner(System.in);
+    DataBaseServices DB = DataBaseServices.getInstance();
 
-    DataBaseServices DB = new DataBaseServices();
+
+    private EmployeeServices(){}
+    private static EmployeeServices instance;
+    public static EmployeeServices getInstance(){
+        if(instance == null){
+            instance = new EmployeeServices();
+        }
+        return instance;
+    }
+
     public OfferHashSet getOffers(){
         ResultSet rs = DB.fetchAllOffers();
         OfferHashSet offers = new OfferHashSet();
 
         try{
             while(rs.next()){
-                offers.add(new Offer(rs.getInt("offer_id"),rs.getString("user_id"),
-                        rs.getString("car_id"), rs.getFloat("offer")));
+                offers.add(new Offer(rs.getInt("offer_id"),rs.getInt("user_id"),
+                        rs.getInt("car_serial_num"), rs.getFloat("offer"),
+                        rs.getInt("months"), rs.getBoolean("accepted"), rs.getBoolean("pending")));
             }
 
             return offers;
@@ -50,5 +62,15 @@ public class EmployeeServices {
             }
 
         }while(keepAsking);
+    }
+
+    public boolean AddNewCar(Car car){
+        DB.addNewCar(car);
+        return DB.checkForCar(car.getSerialNum());
+    }
+
+    public boolean DeleteCar(int SN){
+
+        return DB.deleteCarBySerialNumber(SN);
     }
 }

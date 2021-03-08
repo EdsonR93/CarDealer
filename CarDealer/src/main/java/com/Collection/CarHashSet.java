@@ -70,7 +70,6 @@ public class CarHashSet extends GenericCollection<Car> {
         MyNode<Car> current = nodes[index];
         MyNode<Car> prevNode = null;
 
-        //TODO: provide more semantic messages when converting to boolean
         if(current == null){ // the list is empty
             return true;
         }
@@ -130,17 +129,17 @@ public class CarHashSet extends GenericCollection<Car> {
     }
 
     @Override
-    public Car getById(String id){
+    public Car getById(int id){
         for(MyNode<Car> n: nodes){
             if(n!=null){
                 MyNode<Car> iterator = n;
                 while (iterator.next!=null){
-                    if(iterator.data.getId().equalsIgnoreCase(id))
+                    if(iterator.data.getSerialNum() == id)
                         return iterator.data;
                     iterator = iterator.next;
                 }
 
-                if(iterator.data.getId().equalsIgnoreCase(id))
+                if(iterator.data.getSerialNum()==id)
                     return iterator.data;
             }
         }

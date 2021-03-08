@@ -1,6 +1,16 @@
 package com.ui;
 
 public class Menus {
+    private Menus(){}
+
+    private static Menus instance;
+
+    public static Menus getInstance(){
+        if(instance == null){
+            instance = new Menus();
+        }
+        return instance;
+    }
 
     public void printWelcomeMenu(){
         System.out.println("1.- Login");

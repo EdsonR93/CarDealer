@@ -10,13 +10,25 @@ import java.util.Scanner;
 
 public class CustomerDriver {
     Scanner scan = new Scanner(System.in);
-    Menus menus = new Menus();
-    CarServices carServices = new CarServices();
-    CustomerServices customerServices = new CustomerServices();
 
-    public void MoveToUserMenu(User user){
+    Menus menus = Menus.getInstance();
+    CarServices carServices = CarServices.getInstance();
+    CustomerServices customerServices = CustomerServices.getInstance();
+
+    private CustomerDriver(){}
+
+    private static CustomerDriver instance;
+
+    public static CustomerDriver getInstance(){
+        if(instance == null){
+            instance = new CustomerDriver();
+        }
+        return instance;
+    }
+
+    public void MoveToCustomerMenu(User user){
         int userInput;
-
+        boolean dontExit = true;
         do{
             menus.printUserMenu();
             try{
@@ -36,7 +48,9 @@ public class CustomerDriver {
 
                             if(userInput == 1){
                                 System.out.println("Enter Serial number: ");
-                                String SN = scan.nextLine();
+                                int SN = scan.nextInt();
+                                scan.nextLine();
+
                                 Car car = cars.getById(SN);
                                 if(car!=null){
                                     customerServices.MakeAnOffer(car, user);
@@ -62,7 +76,7 @@ public class CustomerDriver {
                         break;
                     }
                     case 4:{
-                        return;
+                        dontExit = false;
                     }
                 }
 
@@ -78,7 +92,7 @@ public class CustomerDriver {
                 System.out.println("I dunno whats going on");
                 e.printStackTrace();
             }
-        }while (true);
+        }while (dontExit);
     }
 
 }

@@ -4,38 +4,57 @@ import com.Collection.CarHashSet;
 import com.Model.Car;
 import com.Model.User;
 import com.database.DataBaseServices;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+
 public class CarServices {
     Scanner scan = new Scanner(System.in);
-    DataBaseServices DB = new DataBaseServices();
+    DataBaseServices DB = DataBaseServices.getInstance();
+
+    private CarServices(){}
+    private static CarServices instance;
+
+    public static CarServices getInstance(){
+        if(instance == null)
+            instance = new CarServices();
+
+        return instance;
+    }
+
 
     public Car showAddNewCarForm(User u){
-        String id,model,brand,miles,color,price;
+        String brand,make,color;
+        int serialNum, model, miles;
+        float price;
 
         System.out.println("Car model:");
-        model = scan.nextLine();
+        model = scan.nextInt();
+        scan.nextLine();
         System.out.println("Car brand:");
         brand = scan.nextLine();
+        System.out.println("Car make:");
+        make = scan.nextLine();
         System.out.println("Miles on the car:");
-        miles = scan.nextLine();
+        miles = scan.nextInt();
+        scan.nextLine();
         System.out.println("Color:");
         color = scan.nextLine();
         System.out.println("Car's Serial number: ");
-        id = scan.nextLine();
+        serialNum = scan.nextInt();
+        scan.nextLine();
         System.out.println("Price:");
-        price = scan.nextLine();
+        price = scan.nextFloat();
+        scan.nextLine();
 
-        String owner;
+        int owner;
         if(u.isEmployee()) {
-            owner = "0";
+            owner = 0;
         }else{
-            owner = String.valueOf(u.getId()) ;
+            owner = u.getId();
         }
-        return new Car(id,model,brand,color,miles,price,owner);
+        return new Car(serialNum,model,brand,make,color,miles,price,owner);
     }
 
     public CarHashSet getCars(int id){
@@ -44,9 +63,9 @@ public class CarServices {
 
         try{
             while(rs.next()){
-                cars.add(new Car(rs.getString("car_id"),rs.getString("model"),rs.getString("brand"),
-                        rs.getString("color"),rs.getString("miles"),rs.getString("price"),
-                        rs.getString("user_id")));
+                cars.add(new Car(rs.getInt("serial_num"),rs.getInt("model"),rs.getString("brand"),
+                        rs.getString("make"), rs.getString("color"),rs.getInt("miles"),
+                        rs.getFloat("price"), rs.getInt("user_id")));
 
             }
 

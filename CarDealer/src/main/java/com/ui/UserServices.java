@@ -7,9 +7,18 @@ import java.util.Scanner;
 
 public class UserServices {
     Scanner scan = new Scanner(System.in);
-    DataBaseServices DB = new DataBaseServices();
+    DataBaseServices DB = DataBaseServices.getInstance();
+
+    private UserServices(){}
+    private static UserServices instance;
+    public static UserServices getInstance(){
+        if(instance == null){
+            instance = new UserServices();
+        }
+        return instance;
+    }
     
-    public String[] showLoginForm (){
+    public User showLoginForm (){
         String username,password;
 
         System.out.println("Username:");
@@ -17,13 +26,12 @@ public class UserServices {
         System.out.println("Password:");
         password = scan.nextLine();
 
-        return new String[]{username, password};
+
+        return DB.Login(username,password);
     }
 
     public User showRegisterForm (){
-        boolean isEmployee = false;
-        String emp, username, password, name, lastname;
-        //Car[] carsOwned = {};
+        String username, password, name, lastname;
 
         System.out.println("Create username:");
         username = scan.nextLine();
@@ -42,22 +50,11 @@ public class UserServices {
         System.out.println("Last name:");
         lastname = scan.nextLine();
 
-        //TODO: check if the new user wants to add owned cars?
-        boolean keepAsking;
-        do{
-            System.out.println("Are you an employee of the company?:");
-            emp = scan.nextLine();
-            if(emp.equalsIgnoreCase("Y") || emp.equalsIgnoreCase("Yes")){
-                isEmployee = true;
-                keepAsking = false;
-            }else if (emp.equalsIgnoreCase("N") || emp.equalsIgnoreCase("no")){
-                isEmployee = false;
-                keepAsking = false;
-            }else{
-                keepAsking = true;
-            }
-        }while (keepAsking);
+        return new User(username,password,name,lastname);
+    }
 
-        return new User(isEmployee,username,password,name,lastname);
+    public boolean AddNewUser(User newUser){
+        DB.addNewUser(newUser);
+        return DB.checkForUsername(newUser.getUsername());
     }
 }

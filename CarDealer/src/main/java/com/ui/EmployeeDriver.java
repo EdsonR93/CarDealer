@@ -13,26 +13,32 @@ import java.util.Scanner;
 public class EmployeeDriver {
 
     Scanner scan = new Scanner(System.in);
-    Menus menus = new Menus();
-    CarServices carServices = new CarServices();
-    EmployeeServices employeeServices = new EmployeeServices();
 
-    DataBaseServices DB = new DataBaseServices();
+    Menus menus = Menus.getInstance();
+    CarServices carServices = CarServices.getInstance();
+    EmployeeServices employeeServices = EmployeeServices.getInstance();
+
+    private EmployeeDriver(){}
+    private static EmployeeDriver instance;
+    public static EmployeeDriver getInstance(){
+        if(instance == null){
+            instance = new EmployeeDriver();
+        }
+        return instance;
+    }
 
     public void moveToEmployeeMenu(User user){
         int userInput;
-
+        boolean dontExit = true;
         do {
             menus.printEmployeeMenu();
             try{
                 userInput = scan.nextInt();
                 scan.nextLine();
-
                 switch (userInput){
                     case 1:{
                         Car newCar = carServices.showAddNewCarForm(user);
-                        DB.addNewCar(newCar);
-                        if(DB.checkForCar(newCar.getId()))
+                        if(employeeServices.AddNewCar(newCar))
                             System.out.println("Successful");
                         else
                             System.out.println("Could not add to DB");
@@ -42,36 +48,39 @@ public class EmployeeDriver {
                         System.out.println("To delete a car, you need to provide the Car's Serial number");
                         System.out.println("Do you have the Serial number: y/n");
 
-
                         if(scan.nextLine().equalsIgnoreCase("Y")){
                             System.out.println("Enter Serial number: ");
-                            String SN = scan.nextLine();
-
-                            System.out.println(DB.deleteCarBySerialNumber(SN));
+                            int SN = scan.nextInt();
+                            scan.nextLine();
+                            if(employeeServices.DeleteCar(SN))
+                                System.out.println("Successfully delete car with serial number: " +SN);
+                            else
+                                System.out.println("Couldnt delete car: "+SN);
 
                         }else{
-                            CarHashSet cars =  carServices.getCars(0);//0 is the Id for the company/CarDealer
+                            CarHashSet cars =  carServices.getCars(0);
                             System.out.println(cars.toString());
                             System.out.println("Enter the Serial number of the car to delete:");
-
-                            String SN = scan.nextLine();
-                            System.out.println(DB.deleteCarBySerialNumber(SN));
+                            int SN = scan.nextInt();
+                            scan.nextLine();
+                            if(employeeServices.DeleteCar(SN))
+                                System.out.println("Successfully delete car with serial number: " +SN);
+                            else
+                                System.out.println("Couldnt delete car: "+SN);
                         }
                         break;
                     }
                     case 3:{
                         OfferHashSet offers = employeeServices.getOffers();
                         System.out.println(offers);
-
                         employeeServices.takeOffer(offers);
                         break;
                     }
                     case 4:{
-                        return;
+                        dontExit = false;
+                        break;
                     }
-
                 }
-
             }catch(InputMismatchException e){
                 System.out.println("Not a number");
                 scan.nextLine();
@@ -84,7 +93,7 @@ public class EmployeeDriver {
                 e.printStackTrace();
             }
 
-        }while(true);
+        }while(dontExit);
     }
 
 }

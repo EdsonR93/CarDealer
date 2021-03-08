@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class User {
 
     private int id;
-    private boolean isEmployee;
+    private boolean isEmployee = false;
     private String Username;
     private String Password;
     private String Name;
@@ -13,8 +13,7 @@ public class User {
     //TODO: Is it really necessary to store te cars he owned?
     //private Car[] CarsOwned;
 
-    public User(boolean isEmployee, String username, String password, String name, String lastname) {
-        this.isEmployee = isEmployee;
+    public User(String username, String password, String name, String lastname) {
         this.Username = username;
         this.Password = password;
         this.Name = name;
