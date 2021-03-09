@@ -13,9 +13,9 @@ public class DataBaseServices {
     private DataBaseServices(){
         try{
             Class.forName("org.postgresql.Driver");
-            String pass = "GYBChicos";
-            String user = "postgres";
-            String url = "jdbc:postgresql://localhost:5432/CarDealer";
+            String pass = "MyVeryHardPassword";
+            String user = "ivan";
+            String url = "jdbc:postgresql://project0.cbtacfjqzce9.us-west-2.rds.amazonaws.com:5432/carDealer";
 
             c1 = DriverManager.getConnection(url, user, pass);
             statement = c1.createStatement();
@@ -187,8 +187,10 @@ public class DataBaseServices {
     public boolean AcceptOffer(Offer offer){
         try{
             double monthlyPayment = offer.getAmountOffered() / offer.getMonths();
-            statement.executeUpdate("UPDATE offers SET pending=false WHERE car_serial_num ='"+offer.getCarSerialNum() +"';");
-            statement.executeUpdate("UPDATE offers SET accepted=true, pending=false WHERE offer_id ='"+offer.getOfferId()+"';");
+            PreparedStatement ps = c1.prepareStatement("SELECT accept_offer(?,?);");
+            ps.setInt(1,offer.getOfferId());
+            ps.setInt(2,offer.getCarSerialNum());
+            ps.executeQuery();
             statement.executeUpdate("UPDATE cars SET owner_id = '"+offer.getUserId()+"', price = '"+offer.getAmountOffered()+"' WHERE serial_num ='"+offer.getCarSerialNum()+ "';");
             statement.executeUpdate("INSERT INTO payment_plan(user_id,car_serial_num,monthly_payment,total_months,months_left)" +
                     " VALUES('"+offer.getUserId()+"','"+offer.getCarSerialNum()+"','"+monthlyPayment+"','"+offer.getMonths()+"','"+offer.getMonths()+"')");
