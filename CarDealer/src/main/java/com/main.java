@@ -1,6 +1,9 @@
 package com;
 
 import com.Model.User;
+import com.database.DataBaseServices;
+import com.enterprise.util.HashMap;
+import com.enterprise.util.TestDiscovery;
 import com.ui.EmployeeDriver;
 import com.ui.CustomerDriver;
 import com.ui.UserServices;
@@ -12,6 +15,7 @@ public class main {
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
+
 
         Menus menus = Menus.getInstance();
         UserServices userServices = UserServices.getInstance();
@@ -59,8 +63,21 @@ public class main {
                        }
                        break;
                    }
-                   case 3:{
+                   case 0:{
                        dontExit = false;
+                       break;
+                   }
+                   case 555:{
+                       System.out.println("Running testing framework");
+                       HashMap resultMap = null;
+
+                       try {
+                           resultMap = (new TestDiscovery()).runAndStoreTestInformation();
+                       } catch (Exception var3) {
+                           var3.printStackTrace();
+                       }
+
+                       System.out.println(resultMap);
                        break;
                    }
                    default:{
@@ -82,4 +99,5 @@ public class main {
 
         }while(dontExit);
     }
+
 }

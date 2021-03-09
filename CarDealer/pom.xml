@@ -8,5 +8,13 @@
     <artifactId>CarDealer</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.enterprise</groupId>
+            <artifactId>java-testing-framework</artifactId>
+            <version>0.1</version>
+        </dependency>
+    </dependencies>
+
 
 </project>

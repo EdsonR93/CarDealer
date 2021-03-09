@@ -48,6 +48,19 @@ public class DataBaseServices {
         return true;
     }
 
+    public String getTestUsername(){
+        try{
+            ResultSet result = statement.executeQuery("SELECT name,lastname FROM users WHERE username='test';");
+            if (result.next())
+                return result.getString("name") +" "+result.getString("lastname");
+        }catch(SQLException sqlEx){
+            System.out.println("connection failed?");
+            sqlEx.printStackTrace();
+        }
+        return "";
+    }
+
+
     public boolean CheckForCar(int SN){
         try{
             ResultSet result = statement.executeQuery("SELECT serial_num FROM cars WHERE serial_num='"+SN+"';");
