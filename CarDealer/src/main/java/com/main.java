@@ -1,50 +1,85 @@
 package com;
 
 import com.Model.User;
-import com.database.TempDB;
+import com.ui.EmployeeDriver;
+import com.ui.CustomerDriver;
 import com.ui.UserServices;
 import com.ui.Menus;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class main {
 
     public static void main(String[] args) {
-        TempDB DB = new TempDB();
         Scanner scan = new Scanner(System.in);
-        UserServices userServices = new UserServices();
-        Menus menus = new Menus();
 
-        boolean loggedSuccessfully = false;
+        Menus menus = Menus.getInstance();
+        UserServices userServices = UserServices.getInstance();
+        EmployeeDriver employeeServices = EmployeeDriver.getInstance();
+        CustomerDriver customerDriver = CustomerDriver.getInstance();
+
         int userInput;
+        boolean dontExit = true;
         do{
-           menus.showWelcomeMenu();
+           menus.printWelcomeMenu();
 
            try{
                userInput = scan.nextInt();
+               scan.nextLine();
                switch (userInput){
                    case 1:{
-                       String[] newUserData = userServices.showLoginForm();
-                       //TODO: authenticate the user
+                       boolean keepTrying;
+
+                       String tryAgain;
+                       do{
+                           User user = userServices.ShowLoginForm();
+
+                           if(user != null && user.isEmployee()){
+                               employeeServices.MoveToEmployeeMenu(user);
+                               keepTrying = false;
+
+                           }else if (user!=null){
+                               customerDriver.MoveToCustomerMenu(user);
+                               keepTrying = false;
+                           }else {
+                               System.out.println("Username or name ar incorrect");
+                               System.out.println("try again? y/n");
+                               tryAgain = scan.nextLine();
+                               keepTrying = tryAgain.equalsIgnoreCase("y");
+                           }
+                       }while (keepTrying);
                        break;
                    }
                    case 2:{
-                       User newUser = userServices.showRegisterForm();
-                       //TODO: Submit to DB
-                        break;
+                       User newUser = userServices.ShowRegisterForm();
+                       if(userServices.AddNewUser(newUser)){
+                           System.out.println("Successfully added new user");
+                       }else{
+                           System.out.println("Error trying to add new user, please try again");
+                       }
+                       break;
                    }
                    case 3:{
-                       return;
+                       dontExit = false;
+                       break;
                    }
                    default:{
                        System.out.println("input only one of the options.");
+                       break;
                    }
                }
 
-           }catch(Exception  e){
-               System.out.println("input only one of the options.");
+           }catch(InputMismatchException e){
+               System.out.println("Not a number");
+               scan.nextLine();
+           }catch(NoSuchElementException e){
+               System.out.println("No input was read");
+           }catch(IllegalStateException e){
+               System.out.println("Scanner is closed");
+           }catch(Exception e){
+               e.printStackTrace();
            }
 
-        }while(!loggedSuccessfully);
+        }while(dontExit);
     }
 }

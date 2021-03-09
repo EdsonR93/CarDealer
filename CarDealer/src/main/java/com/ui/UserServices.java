@@ -1,41 +1,44 @@
 package com.ui;
 
-import com.Model.Car;
 import com.Model.User;
-import com.database.TempDB;
+import com.database.DataBaseServices;
+
 import java.util.Scanner;
 
 public class UserServices {
-    TempDB DB = new TempDB();
     Scanner scan = new Scanner(System.in);
+    private final DataBaseServices DB = DataBaseServices.getInstance();
+
+    private UserServices(){}
+    private static UserServices instance;
+    public static UserServices getInstance(){
+        if(instance == null){
+            instance = new UserServices();
+        }
+        return instance;
+    }
     
-    public String[] showLoginForm (){
-        String username;
-        String password;
+    public User ShowLoginForm(){
+        String username,password;
+
         System.out.println("Username:");
         username = scan.nextLine();
         System.out.println("Password:");
         password = scan.nextLine();
-        return new String[]{username, password};
+
+
+        return DB.Login(username,password);
     }
 
-//    public String login(String[] cred, TempDB BD){
-//
-//    }
-
-    public User showRegisterForm (){
-        int id = 1;
-        boolean isEmployee = false;
-        String emp;
-        String username;
-        String password;
-        String name;
-        String lastname;
-        Car[] carsOwned = {};
+    public User ShowRegisterForm(){
+        String username, password, name, lastname;
 
         System.out.println("Create username:");
         username = scan.nextLine();
-        //TODO: Check if it already exists
+        if(DB.CheckForUsername(username))
+            System.out.println("Username already in use, select another one");
+        else
+            System.out.println("Username is available");
 
         System.out.println("Create password:");
         password = scan.nextLine();
@@ -47,24 +50,11 @@ public class UserServices {
         System.out.println("Last name:");
         lastname = scan.nextLine();
 
-        //TODO: check if the new user wants to add owned cars?
-        boolean keepAsking = false;
-        do{
-            System.out.println("Are you an employee of the company?:");
-            emp = scan.nextLine();
-            if(emp.equalsIgnoreCase("Y") || emp.equalsIgnoreCase("Yes")){
-                isEmployee = true;
-                keepAsking = false;
-            }else if (emp.equalsIgnoreCase("N") || emp.equalsIgnoreCase("no")){
-                isEmployee = false;
-                keepAsking = false;
-            }else{
-                keepAsking = true;
-            }
-        }while (keepAsking);
-
-
-        return new User(id,isEmployee,username,password,name,lastname,carsOwned);
+        return new User(username,password,name,lastname);
     }
 
+    public boolean AddNewUser(User newUser){
+        DB.AddNewUser(newUser);
+        return DB.CheckForUsername(newUser.getUsername());
+    }
 }
