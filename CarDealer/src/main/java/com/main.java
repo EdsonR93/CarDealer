@@ -25,17 +25,17 @@ public class main {
 
            try{
                userInput = scan.nextInt();
-
+               scan.nextLine();
                switch (userInput){
                    case 1:{
                        boolean keepTrying;
 
                        String tryAgain;
                        do{
-                           User user = userServices.showLoginForm();
+                           User user = userServices.ShowLoginForm();
 
                            if(user != null && user.isEmployee()){
-                               employeeServices.moveToEmployeeMenu(user);
+                               employeeServices.MoveToEmployeeMenu(user);
                                keepTrying = false;
 
                            }else if (user!=null){
@@ -51,7 +51,7 @@ public class main {
                        break;
                    }
                    case 2:{
-                       User newUser = userServices.showRegisterForm();
+                       User newUser = userServices.ShowRegisterForm();
                        if(userServices.AddNewUser(newUser)){
                            System.out.println("Successfully added new user");
                        }else{

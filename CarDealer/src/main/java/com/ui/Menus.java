@@ -13,6 +13,7 @@ public class Menus {
     }
 
     public void printWelcomeMenu(){
+        System.out.println("---Welcome---");
         System.out.println("1.- Login");
         System.out.println("2.- Register");
         System.out.println("3.- Exit");
@@ -22,9 +23,10 @@ public class Menus {
     public void printUserMenu(){
         System.out.println("1.- Show available cars");
         System.out.println("2.- Show owned cars");
-        System.out.println("3.- Payments menu");
-        System.out.println("4.- Go back");
-        System.out.println("Option (1,2,3 or 4): ");
+        System.out.println("3.- Review offers made");
+        System.out.println("4.- Payments menu");
+        System.out.println("5.- Sign out");
+        System.out.println("Option (1,2,3,4 or 5): ");
     }
 
     public void printUserCarsMenu(){

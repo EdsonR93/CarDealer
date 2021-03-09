@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class CarServices {
     Scanner scan = new Scanner(System.in);
-    DataBaseServices DB = DataBaseServices.getInstance();
+    private final DataBaseServices DB = DataBaseServices.getInstance();
 
     private CarServices(){}
     private static CarServices instance;
@@ -24,7 +24,7 @@ public class CarServices {
     }
 
 
-    public Car showAddNewCarForm(User u){
+    public Car ShowAddNewCarForm(User u){
         String brand,make,color;
         int serialNum, model, miles;
         float price;
@@ -58,14 +58,14 @@ public class CarServices {
     }
 
     public CarHashSet getCars(int id){
-        ResultSet rs = DB.fetchAllCars(id);
+        ResultSet rs = DB.FetchAllCars(id);
         CarHashSet cars = new CarHashSet();
 
         try{
             while(rs.next()){
-                cars.add(new Car(rs.getInt("serial_num"),rs.getInt("model"),rs.getString("brand"),
+                cars.Add(new Car(rs.getInt("serial_num"),rs.getInt("model"),rs.getString("brand"),
                         rs.getString("make"), rs.getString("color"),rs.getInt("miles"),
-                        rs.getFloat("price"), rs.getInt("user_id")));
+                        rs.getFloat("price"), rs.getInt("owner_id")));
 
             }
 

@@ -1,6 +1,9 @@
 package com.ui;
 
 import com.Collection.CarHashSet;
+import com.Collection.OfferHashSet;
+import com.Collection.PaymentPlanHashSet;
+import com.Collection.PaymentsHashSet;
 import com.Model.Car;
 import com.Model.User;
 
@@ -11,9 +14,9 @@ import java.util.Scanner;
 public class CustomerDriver {
     Scanner scan = new Scanner(System.in);
 
-    Menus menus = Menus.getInstance();
-    CarServices carServices = CarServices.getInstance();
-    CustomerServices customerServices = CustomerServices.getInstance();
+    private final Menus menus = Menus.getInstance();
+    private final CarServices carServices = CarServices.getInstance();
+    private final CustomerServices customerServices = CustomerServices.getInstance();
 
     private CustomerDriver(){}
 
@@ -61,22 +64,63 @@ public class CustomerDriver {
                                 }
                             }else if(userInput == 2 ){
                                 continueOffer = false;
+                            }else{
+                                System.out.println("Select only one of the options");
                             }
                         }while (continueOffer);
 
                         break;
                     }
                     case 2:{
+                        //TODO: Refactor to show better view of cars owned
                         CarHashSet cars = carServices.getCars(user.getId());
-                        System.out.println(cars);
+                        if(cars!=null && cars.Size()>0)
+                            System.out.println(cars);
+                        else
+                            System.out.println("No cars to show");
+
                         break;
                     }
                     case 3:{
-                        //TODO: Refactor purchase so you can select the amount of months you wish to pay the car
+                        //TODO: Modify DB so you can cancel offer?
+                        customerServices.ReviewOffers(user);
                         break;
                     }
                     case 4:{
+                        PaymentsHashSet payments = customerServices.getPayments(user.getId());
+                        if(payments!=null && payments.Size()>0) {
+                            System.out.println("--- Last 5 payments ---");
+                            System.out.println(payments);
+                            System.out.println("---  ---");
+                        }else {
+                            System.out.println("No previous payments");
+                            System.out.println("---  ---");
+                        }
+
+                        System.out.println("Make a payment: y/n");
+                        if(scan.nextLine().equalsIgnoreCase("Y")){
+                            PaymentPlanHashSet paymentsPlan = customerServices.getPaymentPlans(user.getId());
+                            if(paymentsPlan!=null){
+                                System.out.println(paymentsPlan + "\n");
+                                System.out.println("Select payment plan to continue");
+                                userInput = scan.nextInt();
+                                if(paymentsPlan.getById(userInput) != null)
+                                if(customerServices.MakePayment(paymentsPlan.getById(userInput))){
+                                    System.out.print("Making payment");
+                                    for (int i = 0; i<4; i++){
+                                        System.out.print(".");
+                                        Thread.sleep(1000);
+                                    }
+                                    System.out.println("\nPayment successful");
+                                }else
+                                    System.out.println("Please verify info and try again");
+                            }
+                        }
+                        break;
+                    }
+                    case 5:{
                         dontExit = false;
+                        break;
                     }
                 }
 

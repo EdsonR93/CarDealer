@@ -4,7 +4,7 @@ public class Offer {
     private final int offerId;
     private final int userId;
     private final int carSerialNum;
-    private float amountOffered = 0;
+    private double amountOffered = 0;
     private int months = 0;
     private boolean accepted = false;
     private boolean pending = false;
@@ -56,7 +56,7 @@ public class Offer {
     }
 
 
-    public float getAmountOffered() {
+    public double getAmountOffered() {
         return amountOffered;
     }
 

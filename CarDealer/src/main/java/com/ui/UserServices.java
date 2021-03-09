@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class UserServices {
     Scanner scan = new Scanner(System.in);
-    DataBaseServices DB = DataBaseServices.getInstance();
+    private final DataBaseServices DB = DataBaseServices.getInstance();
 
     private UserServices(){}
     private static UserServices instance;
@@ -18,7 +18,7 @@ public class UserServices {
         return instance;
     }
     
-    public User showLoginForm (){
+    public User ShowLoginForm(){
         String username,password;
 
         System.out.println("Username:");
@@ -30,12 +30,12 @@ public class UserServices {
         return DB.Login(username,password);
     }
 
-    public User showRegisterForm (){
+    public User ShowRegisterForm(){
         String username, password, name, lastname;
 
         System.out.println("Create username:");
         username = scan.nextLine();
-        if(DB.checkForUsername(username))
+        if(DB.CheckForUsername(username))
             System.out.println("Username already in use, select another one");
         else
             System.out.println("Username is available");
@@ -54,7 +54,7 @@ public class UserServices {
     }
 
     public boolean AddNewUser(User newUser){
-        DB.addNewUser(newUser);
-        return DB.checkForUsername(newUser.getUsername());
+        DB.AddNewUser(newUser);
+        return DB.CheckForUsername(newUser.getUsername());
     }
 }

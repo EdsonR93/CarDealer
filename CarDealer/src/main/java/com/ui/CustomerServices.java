@@ -1,14 +1,18 @@
 package com.ui;
 
-import com.Model.Car;
-import com.Model.User;
+import com.Collection.OfferHashSet;
+import com.Collection.PaymentPlanHashSet;
+import com.Collection.PaymentsHashSet;
+import com.Model.*;
 import com.database.DataBaseServices;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class CustomerServices {
     Scanner scan = new Scanner(System.in);
-    DataBaseServices DB = DataBaseServices.getInstance();
+    private final DataBaseServices DB = DataBaseServices.getInstance();
 
     private CustomerServices(){}
 
@@ -34,11 +38,106 @@ public class CustomerServices {
         scan.nextLine();
 
 
-        if(DB.addNewOffer(car.getSerialNum(),user.getId(),offer,months)){
+        if(DB.AddNewOffer(car.getSerialNum(),user.getId(),offer,months)){
             System.out.println("Offer made successfully");
             System.out.println("Pending for approval");
         }else{
             System.out.println("failed to save Offer, please try again");
         }
+    }
+
+    public void ReviewOffers(User u){
+        //TODO: Customer and Employee services have a get Offer method, Refactor to reuse only one method
+
+        OfferHashSet offers = new OfferHashSet();
+        try{
+            ResultSet rs = DB.FetchOffers(u.getId());
+            while(rs.next()){
+                offers.Add(new Offer(rs.getInt("offer_id"),rs.getInt("user_id"),rs.getInt("car_serial_num"),
+                        rs.getFloat("offer"), rs.getInt("months"),rs.getBoolean("accepted"),
+                        rs.getBoolean("pending")));
+
+            }
+            //TODO: Refactor to show a more user friendly screen
+            if(offers.Size()>0) {
+                StringBuilder accepted = new StringBuilder();
+                StringBuilder rejected = new StringBuilder();
+                StringBuilder pendingForReview = new StringBuilder();
+
+                Offer current = offers.Next();
+
+                while (current!=null){
+                    if(current.isAccepted()){
+                        accepted.append(current).append("\n");
+                    }else if(current.isPending()){
+                        pendingForReview.append(current).append("\n");
+                    }else{
+                        rejected.append(current).append("\n");
+                    }
+                    current = offers.Next();
+                }
+
+                System.out.println("Offers Rejected\n");
+                System.out.println(rejected);
+                System.out.println("-----------------");
+                System.out.println("Offers Pending of review from the dealer\n");
+                System.out.println(pendingForReview);
+                System.out.println("-----------------");
+                System.out.println("Offers Accepted\n");
+                System.out.println(accepted);
+
+
+            }else{
+                System.out.println("No offers to show");
+            }
+
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    //TODO: working on payments
+    public PaymentsHashSet getPayments(int userId){
+
+        PaymentsHashSet payments = new PaymentsHashSet();
+
+        try{
+            ResultSet rs = DB.FetchPayments(userId);
+            while(rs.next()){
+                payments.Add(new Payment(rs.getInt("payment_id"),rs.getInt("user_id"),
+                        rs.getInt("car_serial_num"),rs.getDouble("payment_amount"),
+                        rs.getDate("payment_date")));
+            }
+
+            return payments;
+
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public PaymentPlanHashSet getPaymentPlans(int userId){
+        PaymentPlanHashSet paymentPlans = new PaymentPlanHashSet();
+
+        try{
+            ResultSet rs = DB.FetchPaymentPlans(userId);
+            while(rs.next()){
+                paymentPlans.Add(new PaymentPlan(rs.getInt("plan_id"),rs.getInt("user_id"),
+                        rs.getInt("car_serial_num"),rs.getDouble("monthly_payment"),
+                        rs.getInt("total_months"),rs.getInt("months_left"),rs.getDate("purchase_date")));
+            }
+            return paymentPlans;
+        }catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean MakePayment(PaymentPlan p){
+
+        return DB.RegisterPayment(p);
     }
 }

@@ -1,8 +1,6 @@
 package com.database;
 
-import com.Model.Offer;
-import com.Model.User;
-import com.Model.Car;
+import com.Model.*;
 //import java.util.function. TODO: see if there is a function I could use
 
 import java.sql.*;
@@ -38,7 +36,7 @@ public class DataBaseServices {
         return instance;
     }
 
-    public boolean checkForUsername(String newUsername){
+    public boolean CheckForUsername(String newUsername){
         try{
             ResultSet result = statement.executeQuery("SELECT username FROM users WHERE username='"+newUsername+"';");
             return result.next();
@@ -50,15 +48,23 @@ public class DataBaseServices {
         return true;
     }
 
-    public boolean checkForCar(int SN){
+    public boolean CheckForCar(int SN){
         try{
-            ResultSet result = statement.executeQuery("SELECT car_id FROM cars WHERE car_id='"+SN+"';");
+            ResultSet result = statement.executeQuery("SELECT serial_num FROM cars WHERE serial_num='"+SN+"';");
             return result.next();
 
         }catch(SQLException ex){
             ex.printStackTrace();
         }
         return true;
+    }
+    public ResultSet FetchPaymentPlans (int userId){
+        try{
+            return statement.executeQuery("SELECT * FROM payment_plan WHERE user_id='"+userId+"' AND months_left > '0';");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     public User Login(String username, String pass) {
@@ -79,12 +85,11 @@ public class DataBaseServices {
         return null;
     }
 
-    public void addNewUser(User u){
+    public void AddNewUser(User u){
         try {
-            statement.executeUpdate("INSERT INTO users (is_employee, username, password," +
-                    " name, lastname ) values ('" + u.isEmployee() + "', '" +
-                    u.getUsername() + "', '" + u.getPassword() + "', '" + u.getName() + "', '" +
-                    u.getLastname() + "');");
+            statement.executeUpdate("INSERT INTO users (username, password," +
+                    " name, lastname ) values ('" + u.getUsername() + "', '" + u.getPassword()
+                    + "', '" + u.getName() + "', '" + u.getLastname() + "');");
 
         }catch(SQLException e){
             System.out.println("Something went wrong at the connection");
@@ -92,24 +97,24 @@ public class DataBaseServices {
         }
     }
 
-    public void addNewCar(Car c){
+    public void AddNewCar(Car c){
         try{
-
-            statement.executeUpdate("INSERT INTO cars (car_id, color, miles, model, brand, price, user_id) values(" +
+            statement.executeUpdate("INSERT INTO cars (serial_num, color, miles, model, brand, make, price, owner_id) values(" +
                     "'" +c.getSerialNum() + "', ' " + c.getColor() + "', '" + c.getMiles() + "', '" +
-                    c.getModel() + "', '" + c.getBrand() + "');");
+                    c.getModel() + "', '" + c.getBrand() + "','"+c.getMake() +"', '"+ c.getPrice()+"','"+c.getOwnerId()+"');");
 
         }catch (SQLException ex){
+            ex.printStackTrace();
             System.out.println("Something wrong at SQL");
         }catch(Exception ex){
             System.out.println("Something wrong while adding the car method");
         }
     }
 
-    public boolean deleteCarBySerialNumber(int SerialNumber){
+    public boolean DeleteCarBySerialNumber(int SerialNumber){
         try {
-            statement.executeUpdate("DELETE FROM cars WHERE car_id = '" + SerialNumber +"';");
-            if(!checkForCar(SerialNumber))
+            statement.executeUpdate("DELETE FROM cars WHERE serial_num = '" + SerialNumber +"';");
+            if(!CheckForCar(SerialNumber))
                 return true;
 
         }catch(SQLException ex) {
@@ -120,9 +125,9 @@ public class DataBaseServices {
         return false;
     }
 
-    public ResultSet fetchAllCars(int i){
+    public ResultSet FetchAllCars(int i){
         try{
-           return statement.executeQuery("Select * from cars where user_id = '"+i+"'");
+           return statement.executeQuery("Select * from cars where owner_id = '"+i+"'");
 
         }catch(SQLException ex){
             System.out.println("could not fetch cars");
@@ -132,7 +137,7 @@ public class DataBaseServices {
         return null;
     }
 
-    public ResultSet fetchAllOffers (){
+    public ResultSet FetchAllOffers(){
         try{
             return statement.executeQuery("Select * from offers where accepted ='false' and pending = 'true';");
         }catch(SQLException ex){
@@ -143,9 +148,31 @@ public class DataBaseServices {
         return null;
     }
 
-    public boolean addNewOffer(int carId, int userId, float offer, int months){
+    public ResultSet FetchOffers(int i){
         try{
-            statement.executeUpdate("INSERT INTO offers VALUES ('"+carId+"','"+userId+"','"+offer+"','"+months+"');");
+            return statement.executeQuery("Select * from offers where user_id='"+i+"';");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public ResultSet FetchPayments(int id){
+        try{
+            return statement.executeQuery("Select * from payments where user_id='"+id+"' order by payment_date desc LIMIT 5;");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean AddNewOffer(int carId, int userId, double offer, int months){
+        try{
+            statement.executeUpdate("INSERT INTO offers(car_serial_num,user_id,offer,months) VALUES ('"+carId+"','"+userId+"','"+offer+"','"+months+"');");
             //TODO: Add a way to verify
             return true;
         } catch (SQLException ex) {
@@ -157,14 +184,44 @@ public class DataBaseServices {
         return false;
     }
 
-    public boolean acceptOffer(Offer offer){
+    public boolean AcceptOffer(Offer offer){
         try{
+            double monthlyPayment = offer.getAmountOffered() / offer.getMonths();
+            statement.executeUpdate("UPDATE offers SET pending=false WHERE car_serial_num ='"+offer.getCarSerialNum() +"';");
             statement.executeUpdate("UPDATE offers SET accepted=true, pending=false WHERE offer_id ='"+offer.getOfferId()+"';");
-            statement.executeUpdate("UPDATE cars SET user_id = '"+offer.getUserId()+"', price = '"+offer.getAmountOffered()+"' WHERE car_id ='"+offer.getCarSerialNum()+ "';");
-
+            statement.executeUpdate("UPDATE cars SET owner_id = '"+offer.getUserId()+"', price = '"+offer.getAmountOffered()+"' WHERE serial_num ='"+offer.getCarSerialNum()+ "';");
+            statement.executeUpdate("INSERT INTO payment_plan(user_id,car_serial_num,monthly_payment,total_months,months_left)" +
+                    " VALUES('"+offer.getUserId()+"','"+offer.getCarSerialNum()+"','"+monthlyPayment+"','"+offer.getMonths()+"','"+offer.getMonths()+"')");
             return true;
 
         } catch (SQLException ex) {
+            ex.printStackTrace();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean RejectOffer(Offer offer){
+        try{
+            statement.executeUpdate("UPDATE offers SET accepted=false, pending=false WHERE offer_id ='"+offer.getOfferId()+"';");
+            return true;
+
+        } catch (SQLException ex) {
+        ex.printStackTrace();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+            return false;
+    }
+
+    public boolean RegisterPayment(PaymentPlan p){
+        try{
+            statement.executeUpdate("UPDATE payment_plan SET months_left = '"+(p.getMonthsLeft()-1)+"';");
+            statement.executeUpdate("INSERT INTO payments(user_id,car_serial_num,payment_amount)" +
+                    " VALUES ('"+p.getUserId()+"','"+p.getCarSerialNum()+"','"+p.getMonthlyPayment()+"');");
+            return true;
+        }catch (SQLException ex) {
             ex.printStackTrace();
         }catch (Exception ex){
             ex.printStackTrace();

@@ -7,12 +7,13 @@ import com.database.DataBaseServices;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
 public class EmployeeServices {
     Scanner scan = new Scanner(System.in);
-    DataBaseServices DB = DataBaseServices.getInstance();
+    private final DataBaseServices DB = DataBaseServices.getInstance();
 
 
     private EmployeeServices(){}
@@ -25,12 +26,12 @@ public class EmployeeServices {
     }
 
     public OfferHashSet getOffers(){
-        ResultSet rs = DB.fetchAllOffers();
+        ResultSet rs = DB.FetchAllOffers();
         OfferHashSet offers = new OfferHashSet();
 
         try{
             while(rs.next()){
-                offers.add(new Offer(rs.getInt("offer_id"),rs.getInt("user_id"),
+                offers.Add(new Offer(rs.getInt("offer_id"),rs.getInt("user_id"),
                         rs.getInt("car_serial_num"), rs.getFloat("offer"),
                         rs.getInt("months"), rs.getBoolean("accepted"), rs.getBoolean("pending")));
             }
@@ -45,32 +46,47 @@ public class EmployeeServices {
         return null;
     }
 
-    public void takeOffer(OfferHashSet offers){
-
-        boolean keepAsking = true;
+    public boolean TakeOffer(OfferHashSet offers, boolean b){ //TODO: Refactor to show customers info and cars info to the employee
+        String msg;
+        if(b)
+            msg= "Enter offerId to accept offer:";
+        else
+            msg = "Enter offerId of the offer to Reject:";
         do{
-            System.out.println("Enter Offer ID to accept offer:");
-            int offerId = scan.nextInt();
-            scan.nextLine();
-            Offer of = offers.getById(offerId);
+            try{
+                System.out.println(msg);
+                System.out.println("Enter 0 (zero) to exit");
+                int offerId = scan.nextInt();
+                scan.nextLine();
 
-            if(of !=null){
-                System.out.println(DB.acceptOffer(of));
-                keepAsking = false;
-            }else{
-                System.out.println("Offer id does not exist");
+                if(offerId != 0){
+                    Offer of = offers.getById(offerId);
+
+                    if(of !=null && b){
+                        return DB.AcceptOffer(of);
+                    }else if(!b){
+                        return DB.RejectOffer(of);
+                    }else{
+                        System.out.println("Offer id does not exist");
+                    }
+                }else{
+                    return false;
+                }
+            }catch (InputMismatchException ex){
+                System.out.println("Not a number, try again or enter 0 to exit");
+                scan.nextLine();
             }
 
-        }while(keepAsking);
+        }while(true);
     }
 
     public boolean AddNewCar(Car car){
-        DB.addNewCar(car);
-        return DB.checkForCar(car.getSerialNum());
+        DB.AddNewCar(car);
+        return DB.CheckForCar(car.getSerialNum());
     }
 
     public boolean DeleteCar(int SN){
 
-        return DB.deleteCarBySerialNumber(SN);
+        return DB.DeleteCarBySerialNumber(SN);
     }
 }

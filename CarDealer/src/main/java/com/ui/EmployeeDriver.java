@@ -4,7 +4,6 @@ import com.Collection.CarHashSet;
 import com.Collection.OfferHashSet;
 import com.Model.Car;
 import com.Model.User;
-import com.database.DataBaseServices;
 
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
@@ -14,9 +13,9 @@ public class EmployeeDriver {
 
     Scanner scan = new Scanner(System.in);
 
-    Menus menus = Menus.getInstance();
-    CarServices carServices = CarServices.getInstance();
-    EmployeeServices employeeServices = EmployeeServices.getInstance();
+    private final Menus menus = Menus.getInstance();
+    private final CarServices carServices = CarServices.getInstance();
+    private final EmployeeServices employeeServices = EmployeeServices.getInstance();
 
     private EmployeeDriver(){}
     private static EmployeeDriver instance;
@@ -27,7 +26,7 @@ public class EmployeeDriver {
         return instance;
     }
 
-    public void moveToEmployeeMenu(User user){
+    public void MoveToEmployeeMenu(User user){
         int userInput;
         boolean dontExit = true;
         do {
@@ -37,7 +36,7 @@ public class EmployeeDriver {
                 scan.nextLine();
                 switch (userInput){
                     case 1:{
-                        Car newCar = carServices.showAddNewCarForm(user);
+                        Car newCar = carServices.ShowAddNewCarForm(user);
                         if(employeeServices.AddNewCar(newCar))
                             System.out.println("Successful");
                         else
@@ -50,30 +49,56 @@ public class EmployeeDriver {
 
                         if(scan.nextLine().equalsIgnoreCase("Y")){
                             System.out.println("Enter Serial number: ");
-                            int SN = scan.nextInt();
+                            userInput = scan.nextInt();
                             scan.nextLine();
-                            if(employeeServices.DeleteCar(SN))
-                                System.out.println("Successfully delete car with serial number: " +SN);
+                            if(employeeServices.DeleteCar(userInput))
+                                System.out.println("Successfully delete car with serial number: " +userInput);
                             else
-                                System.out.println("Couldnt delete car: "+SN);
+                                System.out.println("Couldnt delete car: "+userInput);
 
                         }else{
                             CarHashSet cars =  carServices.getCars(0);
                             System.out.println(cars.toString());
                             System.out.println("Enter the Serial number of the car to delete:");
-                            int SN = scan.nextInt();
+                            System.out.println("Enter 0 (zero) to go back");
+
+                            userInput = scan.nextInt();
                             scan.nextLine();
-                            if(employeeServices.DeleteCar(SN))
-                                System.out.println("Successfully delete car with serial number: " +SN);
+
+                            if(userInput!=0 && employeeServices.DeleteCar(userInput))
+                                System.out.println("Successfully delete car with serial number: " +userInput);
+                            else if(userInput != 0)
+                                System.out.println("Couldnt delete car: "+userInput);
                             else
-                                System.out.println("Couldnt delete car: "+SN);
+                                System.out.println("Going to previous menu");
                         }
                         break;
                     }
                     case 3:{
                         OfferHashSet offers = employeeServices.getOffers();
-                        System.out.println(offers);
-                        employeeServices.takeOffer(offers);
+                        if (offers !=null && offers.Size()>0){
+                            System.out.println(offers + "\n\n");
+                            System.out.println("1.- Take offer");
+                            System.out.println("2.- Reject Offer");
+                        }else
+                            System.out.println("No offers to show\n");
+
+                        System.out.println("0.- Go back");
+
+                        //TODO: Refactor to repeat question
+                        userInput = scan.nextInt();
+                        if(userInput == 1){
+                            if(employeeServices.TakeOffer(offers, true))
+                                System.out.println("Successfully accepted offer");
+                            else
+                                System.out.println("Offer was not accepted, check if the info is right");
+                        }else if(userInput == 2){
+                            if(employeeServices.TakeOffer(offers, false))
+                                System.out.println("Successfully rejected offer");
+                            else
+                                System.out.println("Offer was not rejected, check if the info is right");
+                        }
+                        scan.nextLine();
                         break;
                     }
                     case 4:{
