@@ -76,19 +76,21 @@ public class CustomerServices {
                     }
                     current = offers.Next();
                 }
-
-                System.out.println("Offers Rejected\n");
+                System.out.println("\n--- ---");
+                System.out.println("Offers Rejected");
                 System.out.println(rejected);
                 System.out.println("-----------------");
-                System.out.println("Offers Pending of review from the dealer\n");
+                System.out.println("Offers Pending of review from the dealer");
                 System.out.println(pendingForReview);
                 System.out.println("-----------------");
-                System.out.println("Offers Accepted\n");
+                System.out.println("Offers Accepted");
                 System.out.println(accepted);
 
 
             }else{
+                System.out.println("--- ---");
                 System.out.println("No offers to show");
+                System.out.println("--- ---\n");
             }
 
         }catch(SQLException ex){

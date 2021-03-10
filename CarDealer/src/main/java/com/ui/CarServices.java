@@ -29,7 +29,7 @@ public class CarServices {
         int serialNum, model, miles;
         float price;
 
-        System.out.println("Car model:");
+        System.out.println("\nCar model:");
         model = scan.nextInt();
         scan.nextLine();
         System.out.println("Car brand:");

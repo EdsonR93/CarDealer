@@ -93,6 +93,7 @@ public class CustomerDriver {
                             System.out.println(payments);
                             System.out.println("---  ---");
                         }else {
+                            System.out.println("\n--- ---");
                             System.out.println("No previous payments");
                             System.out.println("---  ---");
                         }
@@ -118,8 +119,12 @@ public class CustomerDriver {
                         }
                         break;
                     }
-                    case 5:{
+                    case 0:{
                         dontExit = false;
+                        break;
+                    }
+                    default:{
+                        System.out.println("Input only one of the options");
                         break;
                     }
                 }
