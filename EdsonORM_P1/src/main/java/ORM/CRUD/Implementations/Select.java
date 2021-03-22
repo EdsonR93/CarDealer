@@ -1,7 +1,7 @@
 package ORM.CRUD.Implementations;
 
-import ORM.CRUD.CustomeExceptions.NoColumnsAddedException;
-import ORM.CRUD.CustomeExceptions.NoTableAddedException;
+import ORM.CRUD.CustomeExceptions.NoColumnsFoundException;
+import ORM.CRUD.CustomeExceptions.NoTableFoundException;
 import ORM.CRUD.Interfaces.SelectQuery;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,11 +62,11 @@ public class Select implements SelectQuery<Select>{
 
 
     @Override
-    public String buildSelectStatement() throws NoColumnsAddedException, NoTableAddedException {
+    public String buildSelectStatement() throws NoColumnsFoundException, NoTableFoundException {
         if(columns.isEmpty())
-            throw new NoColumnsAddedException();
+            throw new NoColumnsFoundException();
         if(tableNames.isEmpty())
-            throw new NoTableAddedException();
+            throw new NoTableFoundException();
 
         StringBuilder select = new StringBuilder();
 

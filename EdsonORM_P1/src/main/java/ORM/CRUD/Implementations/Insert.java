@@ -1,6 +1,6 @@
 package ORM.CRUD.Implementations;
 
-import ORM.CRUD.CustomeExceptions.NoTableAddedException;
+import ORM.CRUD.CustomeExceptions.NoTableFoundException;
 import ORM.CRUD.Interfaces.InsertQuery;
 
 import java.util.ArrayList;
@@ -54,10 +54,12 @@ public class Insert implements InsertQuery<Insert> {
         return this;
     }
 
+
+
     @Override
-    public String buildInsertQuery() throws NoTableAddedException {
+    public String buildInsertQuery() throws NoTableFoundException {
         if(tableName == null || tableName.equals("") )
-            throw new NoTableAddedException();
+            throw new NoTableFoundException();
         StringBuilder insertQuery = new StringBuilder();
         Iterator<String> iter = columns.iterator();
         insertQuery.append("INSERT INTO ").append(tableName);
@@ -80,15 +82,11 @@ public class Insert implements InsertQuery<Insert> {
                 if(iter.hasNext())
                     insertQuery.append(", ");
             }
-
             insertQuery.append(");");
-
         }
-
-
-
-
-
+//        else{
+//            //TODO:Add implementation to insert default values in row
+//        }
         return insertQuery.toString();
     }
 }

@@ -1,7 +1,7 @@
 package ORM.CRUD.Interfaces;
-import ORM.CRUD.Implementations.Select;
+import ORM.CRUD.CustomeExceptions.NoColumnsFoundException;
+import ORM.CRUD.CustomeExceptions.NoTableFoundException;
 
-import java.sql.ResultSet;
 
 public interface SelectQuery<T> {
     public T setTableName(String tableName);
@@ -10,5 +10,5 @@ public interface SelectQuery<T> {
     public T setWhereClause(String clause);
     public T and();
     public T or();
-    public String buildSelectStatement() throws Exception;
+    public String buildSelectStatement() throws NoColumnsFoundException, NoTableFoundException;
 }

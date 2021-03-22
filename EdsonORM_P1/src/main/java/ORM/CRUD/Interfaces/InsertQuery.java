@@ -1,6 +1,6 @@
 package ORM.CRUD.Interfaces;
 
-import ORM.CRUD.CustomeExceptions.NoTableAddedException;
+import ORM.CRUD.CustomeExceptions.NoTableFoundException;
 
 public interface InsertQuery<T> {
 
@@ -9,6 +9,6 @@ public interface InsertQuery<T> {
     public T setTable(String tableName);
     public T setValue(String value);
     public T setValues(String... values);
-    public String buildInsertQuery() throws NoTableAddedException;
+    public String buildInsertQuery() throws NoTableFoundException;
 
 }
