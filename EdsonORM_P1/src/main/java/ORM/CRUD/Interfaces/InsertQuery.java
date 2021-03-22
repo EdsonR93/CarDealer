@@ -1,5 +1,14 @@
 package ORM.CRUD.Interfaces;
 
-public interface InsertQuery {
+import ORM.CRUD.CustomeExceptions.NoTableAddedException;
+
+public interface InsertQuery<T> {
+
+    public T setColumn(String column);
+    public T setColumns(String... columns);
+    public T setTable(String tableName);
+    public T setValue(String value);
+    public T setValues(String... values);
+    public String buildInsertQuery() throws NoTableAddedException;
 
 }

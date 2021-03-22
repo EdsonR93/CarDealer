@@ -1,13 +1,15 @@
 package com;
 
 import com.Model.User;
+import com.enterprise.model.MetaTestData;
+import com.enterprise.util.HashMap;
 import com.enterprise.util.TestDiscovery;
 import com.ui.CustomerDriver;
 import com.ui.EmployeeDriver;
 import com.ui.Menus;
 import com.ui.UserServices;
 
-import java.util.HashMap;
+import java.lang.reflect.Method;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -70,7 +72,7 @@ public class main {
                    }
                    case 555:{
                        System.out.println("Running testing framework");
-                       HashMap resultMap = null;
+                       HashMap<Method, MetaTestData> resultMap = null;
 
                        try {
                            resultMap = (new TestDiscovery()).runAndStoreTestInformation();

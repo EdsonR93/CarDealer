@@ -1,30 +1,27 @@
 package ORM.CRUD.Implementations;
 
+import ORM.CRUD.CustomeExceptions.NoColumnsAddedException;
+import ORM.CRUD.CustomeExceptions.NoTableAddedException;
 import ORM.CRUD.Interfaces.SelectQuery;
-import com.Collection.CarHashSet;
-import com.Model.User;
-
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
-public class Select{
+public class Select implements SelectQuery<Select>{
 
-    List<String> tableNames = new ArrayList<>();
-    List<String> columns = new ArrayList<>();
-    List<String> whereClauses = new ArrayList<>();
+    private List<String> tableNames = new ArrayList<>();
+    private List<String> columns = new ArrayList<>();
+    private List<String> whereClauses = new ArrayList<>();
 
+    @Override
     public Select setTableName(String tableName){
         if(tableNames.isEmpty())
             tableNames.add(tableName);
-        //else
-            //TODO: Check select syntax for multiple tables
 
         return this;
     }
 
+    @Override
     public Select setColumn(String column){
         if(column!=null)
             columns.add(column);
@@ -32,6 +29,7 @@ public class Select{
         return this;
     }
 
+    @Override
     public Select setColumns(String... columnsArray){
         for (String col: columnsArray) {
             if(col!=null)
@@ -40,6 +38,7 @@ public class Select{
         return this;
     }
 
+    @Override
     public Select setWhereClause(String clause){
         if(clause!=null)
             whereClauses.add(clause);
@@ -47,24 +46,57 @@ public class Select{
         return this;
     }
 
+    @Override
     public Select and(){
-        whereClauses.add(" AND ");
+        if(!whereClauses.isEmpty())
+            whereClauses.add(" AND ");
         return this;
     }
 
+    @Override
     public Select or(){
-        whereClauses.add(" OR ");
+        if(!whereClauses.isEmpty())
+            whereClauses.add(" OR ");
         return this;
     }
 
 
-    public String buildSelectStatement(){
+    @Override
+    public String buildSelectStatement() throws NoColumnsAddedException, NoTableAddedException {
+        if(columns.isEmpty())
+            throw new NoColumnsAddedException();
+        if(tableNames.isEmpty())
+            throw new NoTableAddedException();
+
         StringBuilder select = new StringBuilder();
+
         select.append("SELECT ");
         Iterator<String> iter = columns.iterator();
         while (iter.hasNext()){
             select.append(iter.next());
+            if(iter.hasNext())
+               select.append(", ");
         }
+
+        select.append(" FROM ");
+
+        iter = tableNames.iterator();
+        while (iter.hasNext()){
+            select.append(iter.next());
+            if(iter.hasNext())
+                select.append(", ");
+        }
+
+        if(!whereClauses.isEmpty()){
+            select.append(" WHERE ");
+            iter = whereClauses.iterator();
+            while (iter.hasNext()){
+                select.append(iter.next());
+            }
+        }
+
+
+        select.append(";");
 
         return select.toString();
     }
