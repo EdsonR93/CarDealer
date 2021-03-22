@@ -1,7 +1,9 @@
 package com.database;
 
-import com.Model.*;
-//import java.util.function. TODO: see if there is a function I could use
+import com.Model.Car;
+import com.Model.Offer;
+import com.Model.PaymentPlan;
+import com.Model.User;
 
 import java.sql.*;
 
