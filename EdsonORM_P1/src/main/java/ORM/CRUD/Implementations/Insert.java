@@ -1,8 +1,12 @@
 package ORM.CRUD.Implementations;
 
-import ORM.CRUD.CustomeExceptions.NoTableFoundException;
+import ORM.Anotations.Column;
+import ORM.Anotations.ColumnNotRequired;
+import ORM.Anotations.Table;
+import ORM.CustomeExceptions.NoTableFoundException;
 import ORM.CRUD.Interfaces.InsertQuery;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,8 +14,35 @@ import java.util.List;
 public class Insert implements InsertQuery<Insert> {
 
     private String tableName;
-    private List<String> columns = new ArrayList<>();
-    private List<String> values = new ArrayList<>();
+    private List<String> columns;
+    private List<String> values;
+
+    public Insert(){
+        values = new ArrayList<>();
+        columns = new ArrayList<>();
+    }
+    public Insert(Object o) throws NoTableFoundException, IllegalAccessException {
+        this();
+        Class<?> cl = o.getClass();
+
+        Table table = cl.getAnnotation(Table.class);
+        if(table!=null)
+            setTableName(table.name());
+
+        Field[] fields = cl.getDeclaredFields();
+        Column col;
+        ColumnNotRequired notReqCol;
+
+        for(Field var : fields){
+            var.setAccessible(true);
+            col = var.getAnnotation(Column.class);
+            notReqCol = var.getAnnotation(ColumnNotRequired.class);
+            if(col!=null && notReqCol==null){
+                setColumn(col.name());
+                setValue(var.get(o).toString());
+            }
+        }
+    }
 
     @Override
     public Insert setColumn(String column) {
@@ -31,7 +62,7 @@ public class Insert implements InsertQuery<Insert> {
     }
 
     @Override
-    public Insert setTable(String tableName) {
+    public Insert setTableName(String tableName) {
         if(tableName!=null)
             this.tableName = tableName;
         return this;
@@ -53,8 +84,6 @@ public class Insert implements InsertQuery<Insert> {
 
         return this;
     }
-
-
 
     @Override
     public String buildInsertQuery() throws NoTableFoundException {

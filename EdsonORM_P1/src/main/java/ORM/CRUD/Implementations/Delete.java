@@ -1,7 +1,7 @@
 package ORM.CRUD.Implementations;
 
-import ORM.CRUD.CustomeExceptions.NoColumnsFoundException;
-import ORM.CRUD.CustomeExceptions.NoTableFoundException;
+import ORM.CustomeExceptions.NoTableFoundException;
+import ORM.CustomeExceptions.NoWhereClauseFoundException;
 import ORM.CRUD.Interfaces.DeleteQuery;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class Delete implements DeleteQuery<Delete> {
     }
 
     @Override
-    public Delete setWhereClaus(String clause) {
+    public Delete setWhereClause(String clause) {
         if(clause!=null)
             whereClauses.add(clause);
         return this;
@@ -41,21 +41,22 @@ public class Delete implements DeleteQuery<Delete> {
     }
 
     @Override
-    public String buildDeleteQuery() throws NoTableFoundException {
+    public String buildDeleteQuery() throws NoTableFoundException, NoWhereClauseFoundException {
         if(tableName==null || tableName.equals(""))
             throw new NoTableFoundException();
+        if(whereClauses.isEmpty())
+            throw new NoWhereClauseFoundException();
 
         StringBuilder deleteQuery = new StringBuilder();
 
         deleteQuery.append("DELETE FROM ").append(tableName);
-        Iterator<String> iter = whereClauses.iterator();
-         if(!whereClauses.isEmpty()){
-             deleteQuery.append(" WHERE ");
-            while (iter.hasNext()){
-                deleteQuery.append(iter.next());
-            }
-        }
+        Iterator<String> iter;
 
+        iter = whereClauses.iterator();
+        deleteQuery.append(" WHERE ");
+        while (iter.hasNext()){
+            deleteQuery.append(iter.next());
+        }
          deleteQuery.append(";");
 
         return deleteQuery.toString();

@@ -19,20 +19,18 @@
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
         </dependency>
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>5.4.10.Final</version>
         </dependency>
+
         <dependency>
-
-        <groupId>com.enterprise</groupId>
-
-        <artifactId>java-testing-framework</artifactId>
-
-        <version>0.1</version>
-
-    </dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.12</version>
+        </dependency>
     </dependencies>
 
 </project>

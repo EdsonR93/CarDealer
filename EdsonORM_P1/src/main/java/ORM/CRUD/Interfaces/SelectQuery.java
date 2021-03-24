@@ -1,6 +1,6 @@
 package ORM.CRUD.Interfaces;
-import ORM.CRUD.CustomeExceptions.NoColumnsFoundException;
-import ORM.CRUD.CustomeExceptions.NoTableFoundException;
+import ORM.CustomeExceptions.NoColumnsFoundException;
+import ORM.CustomeExceptions.NoTableFoundException;
 
 
 public interface SelectQuery<T> {

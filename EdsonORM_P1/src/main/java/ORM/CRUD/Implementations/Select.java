@@ -1,7 +1,8 @@
 package ORM.CRUD.Implementations;
 
-import ORM.CRUD.CustomeExceptions.NoColumnsFoundException;
-import ORM.CRUD.CustomeExceptions.NoTableFoundException;
+import ORM.Anotations.Table;
+import ORM.CustomeExceptions.NoColumnsFoundException;
+import ORM.CustomeExceptions.NoTableFoundException;
 import ORM.CRUD.Interfaces.SelectQuery;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,9 +10,24 @@ import java.util.List;
 
 public class Select implements SelectQuery<Select>{
 
-    private List<String> tableNames = new ArrayList<>();
-    private List<String> columns = new ArrayList<>();
-    private List<String> whereClauses = new ArrayList<>();
+    private List<String> tableNames;
+    private List<String> columns;
+    private List<String> whereClauses;
+
+    public Select(){
+        tableNames = new ArrayList<>();
+        List<String> columns = new ArrayList<>();
+        whereClauses = new ArrayList<>();
+    }
+
+    public Select(Object obj){
+        this();
+        Class<?> cl = obj.getClass();
+        Table table = cl.getAnnotation(Table.class);
+        if(table!=null)
+            setTableName(table.name());
+
+    }
 
     @Override
     public Select setTableName(String tableName){
