@@ -87,14 +87,7 @@ public class Offer {
 
     @Override
     public String toString() {
-        return "Offer{" +
-                "offerId=" + offerId +
-                ", userId=" + userId +
-                ", carSerialNum=" + carSerialNum +
-                ", amountOffered=" + amountOffered +
-                ", months=" + months +
-                ", accepted=" + accepted +
-                ", pending=" + pending +
-                '}';
+
+        return String.format("%10s\t%10s\t%14s\t%14s\t%10s\t%10s\t%10s",offerId,userId,carSerialNum,amountOffered,months,accepted,pending);
     }
 }

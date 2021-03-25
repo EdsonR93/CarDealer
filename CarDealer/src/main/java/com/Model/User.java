@@ -89,13 +89,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", isEmployee=" + isEmployee +
-                ", Username='" + Username + '\'' +
-                ", Password='" + Password + '\'' +
-                ", Name='" + Name + '\'' +
-                ", Lastname='" + Lastname + '\'' +
-                '}';
+        return String.format("%10s\t%10s\t%10s\t%10s\t%10s\t%10s\t",id,isEmployee,Name,Lastname,Username,Password);
     }
 }

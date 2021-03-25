@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="10" failures="0" name="CRUD.Implementations.TestDelete" time="0.029" errors="0" skipped="0">
+<testsuite tests="10" failures="0" name="CRUD.Implementations.TestDelete" time="0.026" errors="0" skipped="0">
   <properties>
     <property name="idea.version" value="2020.3.3"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
@@ -64,14 +64,14 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="CRUD.Implementations.TestDelete" name="testOr_whileWhereClauseIsEmpty_ShouldNotAddAnd" time="0.019"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testOr_whileWhereClauseIsEmpty_ShouldNotAddAnd" time="0.02"/>
   <testcase classname="CRUD.Implementations.TestDelete" name="testSetTableName_nullValue_" time="0"/>
   <testcase classname="CRUD.Implementations.TestDelete" name="testAnd_whileWhereClauseIsEmpty_ShouldNotAddAnd" time="0"/>
   <testcase classname="CRUD.Implementations.TestDelete" name="testSetTableName_emptyValue_shouldBeNotEquals" time="0"/>
   <testcase classname="CRUD.Implementations.TestDelete" name="testAnd_withWhereClause_ShouldAddAnd" time="0"/>
   <testcase classname="CRUD.Implementations.TestDelete" name="testOr_withWhereClause_ShouldAddAnd" time="0"/>
   <testcase classname="CRUD.Implementations.TestDelete" name="testSetTableName_validValue_shouldBeEquals" time="0"/>
-  <testcase classname="CRUD.Implementations.TestDelete" name="testBuildDeleteQuery_withValidData_shouldPass" time="0.001"/>
-  <testcase classname="CRUD.Implementations.TestDelete" name="testBuildDeleteQuery_withNoWhereClause_shouldThrowException" time="0.008"/>
-  <testcase classname="CRUD.Implementations.TestDelete" name="testBuildDeleteQuery_withNoTableName_shouldThrowException" time="0.001"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testBuildDeleteQuery_withValidData_shouldPass" time="0"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testBuildDeleteQuery_withNoWhereClause_shouldThrowException" time="0.006"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testBuildDeleteQuery_withNoTableName_shouldThrowException" time="0"/>
 </testsuite>

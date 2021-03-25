@@ -104,15 +104,7 @@ public class Car {
 
     @Override
     public String toString() {
-        return "Car{" +
-                "id=" + serialNum +
-                ", model=" + model +
-                ", brand='" + brand + '\'' +
-                ", make='" + make + '\'' +
-                ", miles=" + miles +
-                ", color='" + color + '\'' +
-                ", price=" + price +
-                ", owner_id=" + ownerId +
-                '}';
+
+        return String.format("%10s\t%10s\t%10s\t%10s\t%10s\t%10s\t%10s\t%10s", serialNum, model, brand, make, miles, color, price, ownerId);
     }
 }

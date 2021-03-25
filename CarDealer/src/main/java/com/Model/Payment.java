@@ -63,12 +63,7 @@ public class Payment {
 
     @Override
     public String toString() {
-        return "Payments{" +
-                "paymentId=" + paymentId +
-                ", userId=" + userId +
-                ", carId=" + carSerialNum +
-                ", paymentAmount=" + paymentAmount +
-                ", paymentDate=" + paymentDate +
-                '}';
+
+        return String.format("%10s\t%10s\t%14s\t%14s\t%13s\t",paymentId,userId,carSerialNum,paymentAmount,paymentDate);
     }
 }

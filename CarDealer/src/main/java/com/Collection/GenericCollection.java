@@ -150,15 +150,14 @@ public abstract class GenericCollection<T> {
     public String toString() {
         StringBuilder out = new StringBuilder();
         int x = 0;
-        out.append("\t");
         for (Node<T> n : nodes) {
             if (n != null) {
                 Node<T> iterator = n;
                 while (iterator.next != null) {
-                    out.append(iterator.data.toString()).append("\n\t");
+                    out.append(iterator.data.toString()).append("\n");
                     iterator = iterator.next;
                 }
-                out.append(iterator.data.toString()).append("\n\t");
+                out.append(iterator.data.toString()).append("\n");
             }
         }
         return out.toString();

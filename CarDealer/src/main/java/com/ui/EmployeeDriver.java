@@ -58,6 +58,8 @@ public class EmployeeDriver {
 
                         }else{
                             CarHashSet cars =  carServices.getCars(0);
+                            System.out.println("Available cars:");
+                            menus.printCarsTable();
                             System.out.println(cars.toString());
                             System.out.println("Enter the Serial number of the car to delete:");
                             System.out.println("Enter 0 (zero) to go back");
@@ -68,7 +70,7 @@ public class EmployeeDriver {
                             if(userInput!=0 && employeeServices.DeleteCar(userInput))
                                 System.out.println("Successfully delete car with serial number: " +userInput);
                             else if(userInput != 0)
-                                System.out.println("Couldnt delete car: "+userInput);
+                                System.out.println("Couldn't delete car: "+userInput);
 
                         }
                         break;
@@ -76,6 +78,7 @@ public class EmployeeDriver {
                     case 3:{
                         OfferHashSet offers = employeeServices.getOffers();
                         if (offers !=null && offers.Size()>0){
+                            menus.printOffersTable();
                             System.out.println(offers + "\n\n");
                             System.out.println("1.- Take offer");
                             System.out.println("2.- Reject Offer");

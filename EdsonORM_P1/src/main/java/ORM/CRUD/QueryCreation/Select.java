@@ -21,7 +21,7 @@ public class Select implements SelectQuery<Select>{
 
     public Select(){
         tableNames = new Vector<>();
-        List<String> columns = new Vector<>();
+        columns = new Vector<>();
         whereClauses = new Vector<>();
     }
 

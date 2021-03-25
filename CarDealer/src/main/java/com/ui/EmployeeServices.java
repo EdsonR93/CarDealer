@@ -26,10 +26,9 @@ public class EmployeeServices {
     }
 
     public OfferHashSet getOffers(){
-        ResultSet rs = DB.FetchAllOffers();
-        OfferHashSet offers = new OfferHashSet();
-
         try{
+            ResultSet rs = DB.FetchAllOffers();
+            OfferHashSet offers = new OfferHashSet();
             while(rs.next()){
                 offers.Add(new Offer(rs.getInt("offer_id"),rs.getInt("user_id"),
                         rs.getInt("car_serial_num"), rs.getFloat("offer"),
@@ -37,9 +36,7 @@ public class EmployeeServices {
             }
 
             return offers;
-        }catch(SQLException ex){
-            ex.printStackTrace();
-        }catch(Exception ex){
+        } catch(Exception ex){
             ex.printStackTrace();
         }
 

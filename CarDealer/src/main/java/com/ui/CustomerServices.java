@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 public class CustomerServices {
     Scanner scan = new Scanner(System.in);
+    Menus menus = Menus.getInstance();
     private final DBHandler DB = DBHandler.INSTANCE;
 
     private CustomerServices(){}
@@ -29,6 +30,7 @@ public class CustomerServices {
         float offer = 0f;
         int months =0;
 
+        menus.printCarsTable();
         System.out.println(car.toString());
         System.out.println("How much do you want to offer?");
         offer = scan.nextFloat();
@@ -76,17 +78,15 @@ public class CustomerServices {
                     }
                     current = offers.Next();
                 }
-                System.out.println("\n--- ---");
                 System.out.println("Offers Rejected");
+                menus.printOffersTable();
                 System.out.println(rejected);
-                System.out.println("-----------------");
                 System.out.println("Offers Pending of review from the dealer");
+                menus.printOffersTable();
                 System.out.println(pendingForReview);
-                System.out.println("-----------------");
                 System.out.println("Offers Accepted");
+                menus.printOffersTable();
                 System.out.println(accepted);
-
-
             }else{
                 System.out.println("--- ---");
                 System.out.println("No offers to show");

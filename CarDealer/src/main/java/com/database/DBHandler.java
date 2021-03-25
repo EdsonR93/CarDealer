@@ -8,13 +8,14 @@ import ORM.CRUD.QueryCreation.Update;
 import com.Model.*;
 
 import java.sql.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public enum DBHandler {
     INSTANCE;
 
     QueryHandler queryHandler;
-
-
     DBHandler(){
         try{
             queryHandler = new QueryHandler(DBServices.INSTANCE.getConnection());
@@ -28,9 +29,13 @@ public enum DBHandler {
         try{
             Select sel = new Select();
             sel.setColumn("username").setTableName("users").setWhereClause("username='"+newUsername+"'");
-            ResultSet result = queryHandler.SelectQuery(sel);
-            return result.next();
-
+            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
+            if(result!=null){
+                return result.next();
+            }else{
+                result = queryHandler.SelectQuery(sel);
+                return result.next();
+            }
         }catch(SQLException sqlEx){
             System.out.println("Could not verify user, connection failed?");
             sqlEx.printStackTrace();
@@ -42,20 +47,29 @@ public enum DBHandler {
         try{
             Select sel = new Select();
             sel.setColumn("serial_num").setTableName("cars").setWhereClause("serial_num='"+SN+"'");
-            ResultSet result = queryHandler.SelectQuery(sel);
+            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
+            if (result == null) {
+                result = queryHandler.SelectQuery(sel);
+            }
             return result.next();
-
         }catch(SQLException ex){
             ex.printStackTrace();
         }
         return true;
     }
+
     synchronized public ResultSet FetchPaymentPlans (int userId){
         try{
             Select sel = new Select();
             sel.setColumn("*").setTableName("payment_plan").setWhereClause("user_id ='"+userId+"'").and()
                     .setWhereClause("months_left > '0'");
-            return queryHandler.SelectQuery(sel);
+            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
+            if(result!=null){
+                return result;
+            }else{
+                result = queryHandler.SelectQuery(sel);
+                return result;
+            }
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -83,52 +97,18 @@ public enum DBHandler {
         return null;
     }
 
-    synchronized public void AddNewUser(User u){
-        try {
-            Insert ins = new Insert(u);
-            queryHandler.insertQuery(ins);
-        }catch(SQLException e){
-            System.out.println("Something went wrong at the connection");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    synchronized public void AddNewCar(Car c){
-        try{
-            Insert ins = new Insert(c);
-            queryHandler.insertQuery(ins);
-        }catch (SQLException ex){
-            ex.printStackTrace();
-            System.out.println("Something wrong at SQL");
-        }catch(Exception ex){
-            System.out.println("Something wrong while adding the car method");
-        }
-    }
-
-    synchronized public boolean DeleteCarBySerialNumber(int SerialNumber){
-        try {
-            Delete del = new Delete();
-            del.setTableName("cars").setWhereClause("serial_num = '" + SerialNumber +"'");
-            queryHandler.deleteQuery(del);
-            if(!CheckForCar(SerialNumber))
-                return true;
-
-        }catch(SQLException ex) {
-            System.out.println("SQL exception at deleting");
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return false;
-    }
-
     synchronized public ResultSet FetchAllCars(int i){
         try{
             Select sel = new Select();
             sel.setColumn("*").setTableName("cars").setWhereClause("owner_id = '"+i+"'");
 
-           return queryHandler.SelectQuery(sel);
+            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
+            if(result!=null){
+                return result;
+            }else{
+                result = queryHandler.SelectQuery(sel);
+                return result;
+            }
 
         }catch(SQLException ex){
             System.out.println("could not fetch cars");
@@ -143,10 +123,14 @@ public enum DBHandler {
             Select sel = new Select();
             sel.setColumn("*").setTableName("offers").setWhereClause("accepted ='false'").and()
                     .setWhereClause("pending = 'true'");
-            return queryHandler.SelectQuery(sel);
+            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
+            if(result!=null){
+                return result;
+            }else{
+                result = queryHandler.SelectQuery(sel);
+                return result;
+            }
         }catch(SQLException ex){
-            ex.printStackTrace();
-        }catch(Exception ex){
             ex.printStackTrace();
         }
         return null;
@@ -156,10 +140,14 @@ public enum DBHandler {
         try{
             Select sel = new Select();
             sel.setColumn("*").setTableName("offers").setWhereClause("user_id='"+i+"'");
-            return queryHandler.SelectQuery(sel);
+            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
+            if(result!=null){
+                return result;
+            }else{
+                result = queryHandler.SelectQuery(sel);
+                return result;
+            }
         }catch(SQLException ex){
-            ex.printStackTrace();
-        }catch(Exception ex){
             ex.printStackTrace();
         }
         return null;
@@ -169,91 +157,166 @@ public enum DBHandler {
         try{
             Select sel = new Select();
             sel.setColumn("*").setTableName("payments").setWhereClause("user_id='"+id+"'").setWhereClause("order by payment_date desc LIMIT 5");
-            return queryHandler.SelectQuery(sel);
+            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
+            if(result!=null){
+                return result;
+            }else{
+                result = queryHandler.SelectQuery(sel);
+                return result;
+            }
         }catch(SQLException ex){
-            ex.printStackTrace();
-        }catch(Exception ex){
             ex.printStackTrace();
         }
         return null;
     }
 
-    synchronized public boolean AddNewOffer(int carId, int userId, double offer, int months){
+    synchronized public Boolean AddNewOffer(final int carId, final int userId, final double offer, final int months) {
+        Callable<Boolean> call = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                final Insert ins = new Insert();
+                ins.setTableName("offers").setColumns("car_serial_num","user_id","offer","months")
+                        .setValues(String.valueOf(carId),String.valueOf(userId),String.valueOf(offer),String.valueOf(months));
+                int i = queryHandler.insertQuery(ins);
+                return i > 0;
+            }
+        };
+
         try{
-            Insert ins = new Insert();
-            ins.setTableName("offers").setColumns("car_serial_num","user_id","offer","months")
-                    .setValues(String.valueOf(carId),String.valueOf(userId),String.valueOf(offer),String.valueOf(months));
-            queryHandler.insertQuery(ins);
-            //TODO: Add a way to verify
-            return true;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }catch (Exception ex){
-            ex.printStackTrace();
+            Future<Boolean> f = DBServices.INSTANCE.getThreadActivator().submit(call);
+            return f.get();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    synchronized public Boolean AcceptOffer(final Offer offer){
+        Callable<Boolean> call = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                double monthlyPayment = offer.getAmountOffered() / offer.getMonths();
+
+                Update upd = new Update();
+                upd.setTableName("offers").setValues("pending=false").setWhereClause("car_serial_num ='"+offer.getCarSerialNum()+"'");
+                queryHandler.updateQuery(upd);
+
+                upd = new Update();
+                upd.setTableName("offers").setValues("accepted=true","pending=false")
+                        .setWhereClause("offer_id ='"+offer.getOfferId()+"'");
+                queryHandler.updateQuery(upd);
+
+                upd = new Update();
+                upd.setTableName("cars").setValues("owner_id = '"+offer.getUserId()+"'","price = '"+offer.getAmountOffered()+"'")
+                        .setWhereClause("serial_num ='"+offer.getCarSerialNum()+ "'");
+                queryHandler.updateQuery(upd);
+
+                Insert ins = new Insert(offer);
+                queryHandler.insertQuery(ins);
+
+                return true;
+            }
+        };
+
+        Future<Boolean> f = DBServices.INSTANCE.getThreadActivator().submit(call);
+        try {
+            return f.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    synchronized public Boolean RejectOffer(final Offer offer){
+        Callable<Boolean> call = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                Update upd = new Update();
+                upd.setTableName("offers").setValues("accepted=false","pending=false")
+                        .setWhereClause("offer_id ='"+offer.getOfferId()+"'");
+                int i = queryHandler.updateQuery(upd);
+                return i>0;
+            }
+        };
+        Future<Boolean> f = DBServices.INSTANCE.getThreadActivator().submit(call);
+        try {
+            return f.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    synchronized public Boolean RegisterPayment(final PaymentPlan p){
+        Callable<Boolean> call = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                Update upd = new Update(p);
+                int i = 0;
+                i+= queryHandler.updateQuery(upd);
+                Insert ins = new Insert(new Payment(p.getUserId(),p.getCarSerialNum(),p.getMonthlyPayment()));
+                i+= queryHandler.insertQuery(ins);
+                return i>1;
+            }
+        };
+        Future<Boolean> f = DBServices.INSTANCE.getThreadActivator().submit(call);
+        try {
+            return f.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
 
         return false;
     }
 
-    synchronized public boolean AcceptOffer(Offer offer){
-        try{
-            double monthlyPayment = offer.getAmountOffered() / offer.getMonths();
-
-            Update upd = new Update();
-            upd.setTableName("offers").setValues("pending=false").setWhereClause("car_serial_num ='"+offer.getCarSerialNum()+"'");
-            queryHandler.updateQuery(upd);
-
-            upd = new Update();
-            upd.setTableName("offers").setValues("accepted=true","pending=false")
-                    .setWhereClause("offer_id ='"+offer.getOfferId()+"'");
-            queryHandler.updateQuery(upd);
-
-            upd = new Update();
-            upd.setTableName("cars").setValues("owner_id = '"+offer.getUserId()+"'","price = '"+offer.getAmountOffered()+"'")
-                    .setWhereClause("serial_num ='"+offer.getCarSerialNum()+ "'");
-            queryHandler.updateQuery(upd);
-
-            Insert ins = new Insert(offer);
-            queryHandler.insertQuery(ins);
-            return true;
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }catch (Exception ex){
-            ex.printStackTrace();
+    synchronized public Boolean DeleteCarBySerialNumber(final int SerialNumber){
+        Callable<Boolean> call = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                final Delete del = new Delete();
+                del.setTableName("cars").setWhereClause("serial_num = '" + SerialNumber +"'");
+                int i = queryHandler.deleteQuery(del);
+                return i>0;
+            }
+        };
+        Future<Boolean> f = DBServices.INSTANCE.getThreadActivator().submit(call);
+        try {
+            return f.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
         return false;
     }
 
-    synchronized public boolean RejectOffer(Offer offer){
-        try{
-            Update upd = new Update();
-            upd.setTableName("offers").setValues("accepted=false","pending=false")
-                    .setWhereClause("offer_id ='"+offer.getOfferId()+"'");
-            queryHandler.updateQuery(upd);
-            return true;
-
-        } catch (SQLException ex) {
-        ex.printStackTrace();
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-            return false;
+    synchronized public void AddNewUser(final User u){
+        DBServices.INSTANCE.getThreadActivator().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Insert ins = new Insert(u);
+                    queryHandler.insertQuery(ins);
+                } catch (SQLException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
-    synchronized public boolean RegisterPayment(PaymentPlan p){
-        try{
-            Update upd = new Update(p);
-            queryHandler.updateQuery(upd);
-            Insert ins = new Insert(new Payment(p.getUserId(),p.getCarSerialNum(),p.getMonthlyPayment()));
-            queryHandler.insertQuery(ins);
-            return true;
-        }catch (SQLException ex) {
-            ex.printStackTrace();
-        }catch (Exception ex){
-            ex.printStackTrace();
+    synchronized public boolean AddNewCar(final Car c){
+        Callable<Boolean> call = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                Insert ins = new Insert(c);
+                int i = queryHandler.insertQuery(ins);
+                return i>0;
+            }
+        };
+        Future<Boolean> f = DBServices.INSTANCE.getThreadActivator().submit(call);
+        try {
+            return f.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
         return false;
     }
-
 }

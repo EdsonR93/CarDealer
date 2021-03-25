@@ -80,14 +80,7 @@ public class PaymentPlan {
 
     @Override
     public String toString() {
-        return "PaymentPlan{" +
-                "planId=" + planId +
-                ", userId=" + userId +
-                ", carSerialNum=" + carSerialNum +
-                ", monthlyPayment=" + monthlyPayment +
-                ", totalMonths=" + totalMonths +
-                ", monthsLeft=" + monthsLeft +
-                ", purchaseDate=" + purchaseDate +
-                '}';
+
+        return String.format("%7s\t%9s\t%14s\t%15s\t%15s\t%10s\t%13s\t",planId,userId,carSerialNum,monthlyPayment,totalMonths,monthsLeft,purchaseDate);
     }
 }
