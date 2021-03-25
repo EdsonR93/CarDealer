@@ -1,4 +1,6 @@
 package ORM.CustomeExceptions;
 
-public class NoValuesFoundException extends Exception{
+import java.sql.SQLException;
+
+public class NoValuesFoundException extends SQLException {
 }

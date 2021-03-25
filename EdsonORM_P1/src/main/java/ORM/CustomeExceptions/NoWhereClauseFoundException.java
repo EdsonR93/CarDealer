@@ -1,4 +1,6 @@
 package ORM.CustomeExceptions;
 
-public class NoWhereClauseFoundException extends Exception{
+import java.sql.SQLException;
+
+public class NoWhereClauseFoundException extends SQLException {
 }

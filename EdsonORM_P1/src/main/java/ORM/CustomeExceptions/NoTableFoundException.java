@@ -1,4 +1,6 @@
 package ORM.CustomeExceptions;
 
-public class NoTableFoundException extends Exception{
+import java.sql.SQLException;
+
+public class NoTableFoundException extends SQLException {
 }

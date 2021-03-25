@@ -1,4 +1,6 @@
 package ORM.CustomeExceptions;
 
-public class NoColumnsFoundException extends Exception{
+import java.sql.SQLException;
+
+public class NoColumnsFoundException extends SQLException {
 }

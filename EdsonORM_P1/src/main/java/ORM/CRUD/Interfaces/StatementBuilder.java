@@ -1,9 +1,6 @@
 package ORM.CRUD.Interfaces;
 
-import ORM.CustomeExceptions.NoColumnsFoundException;
-import ORM.CustomeExceptions.NoTableFoundException;
-import ORM.CustomeExceptions.NoValuesFoundException;
-import ORM.CustomeExceptions.NoWhereClauseFoundException;
+import ORM.CustomeExceptions.*;
 
 public interface StatementBuilder<T> extends SelectQuery<T>,InsertQuery<T>,UpdateQuery<T>,DeleteQuery<T>{
 
@@ -38,7 +35,7 @@ public interface StatementBuilder<T> extends SelectQuery<T>,InsertQuery<T>,Updat
     String buildUpdateQuery() throws NoTableFoundException, NoValuesFoundException, NoWhereClauseFoundException;
 
     @Override
-    String buildInsertQuery() throws NoTableFoundException;
+    String buildInsertQuery() throws NoTableFoundException, NotSameAmountOfColumnAndValuesException;
 
     @Override
     String buildDeleteQuery() throws NoTableFoundException, NoWhereClauseFoundException;

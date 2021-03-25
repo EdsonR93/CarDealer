@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Insert.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EdsonORM_P1</a> &gt; <a href="index.source.html" class="el_package">ORM.CRUD.Implementations</a> &gt; <span class="el_source">Insert.java</span></div><h1>Insert.java</h1><pre class="source lang-java linenums">package ORM.CRUD.Implementations;
+
+import ORM.Anotations.Column;
+import ORM.Anotations.ColumnNotRequired;
+import ORM.Anotations.Table;
+import ORM.CustomeExceptions.NoTableFoundException;
+import ORM.CRUD.Interfaces.InsertQuery;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class Insert implements InsertQuery&lt;Insert&gt; {
+
+    private String tableName;
+    private List&lt;String&gt; columns;
+    private List&lt;String&gt; values;
+
+<span class="nc" id="L20">    public Insert(){</span>
+<span class="nc" id="L21">        values = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L22">        columns = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L23">    }</span>
+    public Insert(Object o) throws NoTableFoundException, IllegalAccessException {
+<span class="nc" id="L25">        this();</span>
+<span class="nc" id="L26">        Class&lt;?&gt; cl = o.getClass();</span>
+
+<span class="nc" id="L28">        Table table = cl.getAnnotation(Table.class);</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        if(table!=null)</span>
+<span class="nc" id="L30">            setTableName(table.name());</span>
+
+<span class="nc" id="L32">        Field[] fields = cl.getDeclaredFields();</span>
+        Column col;
+        ColumnNotRequired notReqCol;
+
+<span class="nc bnc" id="L36" title="All 2 branches missed.">        for(Field var : fields){</span>
+<span class="nc" id="L37">            var.setAccessible(true);</span>
+<span class="nc" id="L38">            col = var.getAnnotation(Column.class);</span>
+<span class="nc" id="L39">            notReqCol = var.getAnnotation(ColumnNotRequired.class);</span>
+<span class="nc bnc" id="L40" title="All 4 branches missed.">            if(col!=null &amp;&amp; notReqCol==null){</span>
+<span class="nc" id="L41">                setColumn(col.name());</span>
+<span class="nc" id="L42">                setValue(var.get(o).toString());</span>
+            }
+        }
+<span class="nc" id="L45">    }</span>
+
+    @Override
+    public Insert setColumn(String column) {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if(column!=null)</span>
+<span class="nc" id="L50">            columns.add(column);</span>
+<span class="nc" id="L51">        return this;</span>
+    }
+
+    @Override
+    public Insert setColumns(String... columns){
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        for (String col : columns){</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">            if(col!=null){</span>
+<span class="nc" id="L58">                this.columns.add(col);</span>
+            }
+        }
+<span class="nc" id="L61">        return this;</span>
+    }
+
+    @Override
+    public Insert setTableName(String tableName) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if(tableName!=null)</span>
+<span class="nc" id="L67">            this.tableName = tableName;</span>
+<span class="nc" id="L68">        return this;</span>
+    }
+
+    @Override
+    public Insert setValue(String value) {
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if(value!=null)</span>
+<span class="nc" id="L74">            values.add(value);</span>
+<span class="nc" id="L75">        return this;</span>
+    }
+
+    @Override
+    public Insert setValues(String... values) {
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        for(String val : values){</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">            if(val!=null)</span>
+<span class="nc" id="L82">                this.values.add(val);</span>
+        }
+
+<span class="nc" id="L85">        return this;</span>
+    }
+
+    @Override
+    public String buildInsertQuery() throws NoTableFoundException {
+<span class="nc bnc" id="L90" title="All 4 branches missed.">        if(tableName == null || tableName.equals(&quot;&quot;) )</span>
+<span class="nc" id="L91">            throw new NoTableFoundException();</span>
+<span class="nc" id="L92">        StringBuilder insertQuery = new StringBuilder();</span>
+<span class="nc" id="L93">        Iterator&lt;String&gt; iter = columns.iterator();</span>
+<span class="nc" id="L94">        insertQuery.append(&quot;INSERT INTO &quot;).append(tableName);</span>
+
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        if(!columns.isEmpty()){</span>
+<span class="nc" id="L97">            insertQuery.append(&quot;(&quot;);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            while (iter.hasNext()){</span>
+<span class="nc" id="L99">                insertQuery.append(iter.next());</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">                if(iter.hasNext())</span>
+<span class="nc" id="L101">                    insertQuery.append(&quot;, &quot;);</span>
+            }
+<span class="nc" id="L103">            insertQuery.append(&quot;)&quot;);</span>
+        }
+
+<span class="nc" id="L106">        iter = values.iterator();</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        if(!values.isEmpty()){</span>
+<span class="nc" id="L108">            insertQuery.append(&quot; VALUES (&quot;);</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            while (iter.hasNext()){</span>
+<span class="nc" id="L110">                insertQuery.append(&quot;'&quot;).append(iter.next()).append(&quot;'&quot;);</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">                if(iter.hasNext())</span>
+<span class="nc" id="L112">                    insertQuery.append(&quot;, &quot;);</span>
+            }
+<span class="nc" id="L114">            insertQuery.append(&quot;);&quot;);</span>
+        }
+//        else{
+//            //TODO:Add implementation to insert default values in row
+//        }
+<span class="nc" id="L119">        return insertQuery.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
