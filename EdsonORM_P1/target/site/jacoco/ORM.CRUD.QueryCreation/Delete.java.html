@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Delete.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EdsonORM_P1</a> &gt; <a href="index.source.html" class="el_package">ORM.CRUD.QueryCreation</a> &gt; <span class="el_source">Delete.java</span></div><h1>Delete.java</h1><pre class="source lang-java linenums">package ORM.CRUD.QueryCreation;
+
+import ORM.CustomeExceptions.NoTableFoundException;
+import ORM.CustomeExceptions.NoWhereClauseFoundException;
+import ORM.CRUD.Interfaces.DeleteQuery;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+<span class="fc" id="L12">public class Delete implements DeleteQuery&lt;Delete&gt; {</span>
+    private String tableName;
+<span class="fc" id="L14">    private List&lt;String&gt; whereClauses = new Vector&lt;&gt;();</span>
+
+    public String getTableName() {
+<span class="fc" id="L17">        return tableName;</span>
+    }
+
+    public List&lt;String&gt; getWhereClauses(){
+<span class="fc" id="L21">        return whereClauses;</span>
+    }
+
+    @Override
+    synchronized public Delete setTableName(String name) {
+<span class="fc bfc" id="L26" title="All 4 branches covered.">        if(name!=null &amp;&amp; !name.equals(&quot;&quot;))</span>
+<span class="fc" id="L27">            tableName = name;</span>
+<span class="fc" id="L28">        return this;</span>
+    }
+
+    @Override
+    synchronized public Delete setWhereClause(String clause) {
+<span class="pc bpc" id="L33" title="2 of 4 branches missed.">        if(clause!=null &amp;&amp; !clause.equals(&quot;&quot;))</span>
+<span class="fc" id="L34">            whereClauses.add(clause);</span>
+<span class="fc" id="L35">        return this;</span>
+    }
+
+    @Override
+    synchronized public Delete and(){
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if(!whereClauses.isEmpty())</span>
+<span class="fc" id="L41">            whereClauses.add(&quot; AND &quot;);</span>
+<span class="fc" id="L42">        return this;</span>
+    }
+
+    @Override
+    synchronized public Delete or(){
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if(!whereClauses.isEmpty())</span>
+<span class="fc" id="L48">            whereClauses.add(&quot; OR &quot;);</span>
+<span class="fc" id="L49">        return this;</span>
+    }
+
+    @Override
+    synchronized public String buildDeleteQuery() throws NoTableFoundException, NoWhereClauseFoundException {
+<span class="pc bpc" id="L54" title="1 of 4 branches missed.">        if(tableName==null || tableName.equals(&quot;&quot;))</span>
+<span class="fc" id="L55">            throw new NoTableFoundException();</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if(whereClauses.isEmpty())</span>
+<span class="fc" id="L57">            throw new NoWhereClauseFoundException();</span>
+
+<span class="fc" id="L59">        StringBuilder deleteQuery = new StringBuilder();</span>
+
+<span class="fc" id="L61">        deleteQuery.append(&quot;DELETE FROM &quot;).append(tableName);</span>
+        Iterator&lt;String&gt; iter;
+
+<span class="fc" id="L64">        iter = whereClauses.iterator();</span>
+<span class="fc" id="L65">        deleteQuery.append(&quot; WHERE &quot;);</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        while (iter.hasNext()){</span>
+<span class="fc" id="L67">            deleteQuery.append(iter.next());</span>
+        }
+<span class="fc" id="L69">         deleteQuery.append(&quot;;&quot;);</span>
+
+<span class="fc" id="L71">        return deleteQuery.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

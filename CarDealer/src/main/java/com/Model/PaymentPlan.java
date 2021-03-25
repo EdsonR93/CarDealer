@@ -1,14 +1,35 @@
 package com.Model;
 
+import ORM.Anotations.Column;
+import ORM.Anotations.ColumnNotRequired;
+import ORM.Anotations.Table;
+
 import java.sql.Date;
 
+@Table(name = "payment_plan")
 public class PaymentPlan {
+
+    @ColumnNotRequired
+    @Column(name = "plan_id")
     private final int planId;
+
+    @Column(name = "user_id")
     private final int userId;
+
+    @Column(name = "car_serial_num")
     private final int carSerialNum;
+
+    @Column(name = "monthly_payment")
     private final double monthlyPayment;
+
+    @Column(name = "total_months")
     private final int totalMonths;
+
+    @Column(name = "months_left")
     private int monthsLeft;
+
+    @ColumnNotRequired
+    @Column(name = "purchase_date")
     private final Date purchaseDate;
 
     public PaymentPlan(int planId, int userId, int carSerialNum, double monthlyPayment, int totalMonths, int monthsLeft, Date purchaseDate) {

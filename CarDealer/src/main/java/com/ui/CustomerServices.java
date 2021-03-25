@@ -4,7 +4,7 @@ import com.Collection.OfferHashSet;
 import com.Collection.PaymentPlanHashSet;
 import com.Collection.PaymentsHashSet;
 import com.Model.*;
-import com.database.DataBaseServices;
+import com.database.DBHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class CustomerServices {
     Scanner scan = new Scanner(System.in);
-    private final DataBaseServices DB = DataBaseServices.getInstance();
+    private final DBHandler DB = DBHandler.getInstance();
 
     private CustomerServices(){}
 

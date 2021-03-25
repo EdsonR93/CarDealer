@@ -109,7 +109,7 @@ public class Update implements UpdateQuery<Update> {
 
         while (iter.hasNext()){
             while (iter.hasNext()){
-                updateQuery.append("'").append(iter.next()).append("'");
+                updateQuery.append(iter.next());
                 if(iter.hasNext())
                     updateQuery.append(", ");
             }

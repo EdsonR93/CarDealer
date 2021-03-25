@@ -1,3 +1,7 @@
 Driver.class
-CRUD\Implementations\TestDelete.class
 Models\Car.class
+Models\User.class
+CRUD\Implementations\TestDelete.class
+CRUD\Implementations\TestSelect.class
+DBServices.class
+CRUD\Implementations\TestInsert.class

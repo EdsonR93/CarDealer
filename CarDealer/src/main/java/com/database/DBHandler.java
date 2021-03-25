@@ -1,44 +1,33 @@
 package com.database;
 
+import ORM.CRUD.DatabaseServices.QueryHandler;
+import ORM.CRUD.QueryCreation.Delete;
+import ORM.CRUD.QueryCreation.Insert;
+import ORM.CRUD.QueryCreation.Select;
+import ORM.CRUD.QueryCreation.Update;
 import com.Model.*;
-//import java.util.function. TODO: see if there is a function I could use
 
 import java.sql.*;
 
-public class DataBaseServices {
+public class DBHandler {
 
-    Connection c1 = null;
-    Statement statement = null;
+    QueryHandler queryHandler;
 
-    private DataBaseServices(){
+
+    private DBHandler(){
         try{
-            Class.forName("org.postgresql.Driver");
-            String pass = "";
-            String user = "";
-            String url = "";
-
-            c1 = DriverManager.getConnection(url, user, pass);
-            statement = c1.createStatement();
+            queryHandler = new QueryHandler(DBServices.INSTANCE.getConnection());
 
         }catch(SQLException sqlEx){
             sqlEx.printStackTrace();
-        }catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-    }
-
-    private static DataBaseServices instance;
-
-    public static DataBaseServices getInstance(){
-        if(instance == null){
-            instance = new DataBaseServices();
-        }
-        return instance;
     }
 
     public boolean CheckForUsername(String newUsername){
         try{
-            ResultSet result = statement.executeQuery("SELECT username FROM users WHERE username='"+newUsername+"';");
+            Select sel = new Select();
+            sel.setColumn("username").setTableName("users").setWhereClause("username='"+newUsername+"'");
+            ResultSet result = queryHandler.SelectQuery(sel);
             return result.next();
 
         }catch(SQLException sqlEx){
@@ -48,22 +37,11 @@ public class DataBaseServices {
         return true;
     }
 
-    public String getTestUsername(){
-        try{
-            ResultSet result = statement.executeQuery("SELECT name,lastname FROM users WHERE username='test';");
-            if (result.next())
-                return result.getString("name") +" "+result.getString("lastname");
-        }catch(SQLException sqlEx){
-            System.out.println("connection failed?");
-            sqlEx.printStackTrace();
-        }
-        return "";
-    }
-
-
     public boolean CheckForCar(int SN){
         try{
-            ResultSet result = statement.executeQuery("SELECT serial_num FROM cars WHERE serial_num='"+SN+"';");
+            Select sel = new Select();
+            sel.setColumn("serial_num").setTableName("cars").setWhereClause("serial_num='"+SN+"'");
+            ResultSet result = queryHandler.SelectQuery(sel);
             return result.next();
 
         }catch(SQLException ex){
@@ -73,7 +51,10 @@ public class DataBaseServices {
     }
     public ResultSet FetchPaymentPlans (int userId){
         try{
-            return statement.executeQuery("SELECT * FROM payment_plan WHERE user_id='"+userId+"' AND months_left > '0';");
+            Select sel = new Select();
+            sel.setColumn("*").setTableName("payment_plan").setWhereClause("user_id ='"+userId+"'").and()
+                    .setWhereClause("months_left > '0'");
+            return queryHandler.SelectQuery(sel);
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -82,7 +63,10 @@ public class DataBaseServices {
 
     public User Login(String username, String pass) {
         try {
-            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE username='" + username + "' AND password ='" + pass + "';");
+            Select sel = new Select();
+            sel.setColumn("*").setTableName("users").setWhereClause("username='" + username + "'").and()
+                    .setWhereClause("password ='" + pass + "'");
+            ResultSet result = queryHandler.SelectQuery(sel);
             if(result.next()){
                 return new User(result.getInt("user_id"), result.getBoolean("is_employee"),result.getString("username"),
                         result.getString("password"),result.getString("name"), result.getString("lastname"));
@@ -100,22 +84,20 @@ public class DataBaseServices {
 
     public void AddNewUser(User u){
         try {
-            statement.executeUpdate("INSERT INTO users (username, password," +
-                    " name, lastname ) values ('" + u.getUsername() + "', '" + u.getPassword()
-                    + "', '" + u.getName() + "', '" + u.getLastname() + "');");
-
+            Insert ins = new Insert(u);
+            queryHandler.insertQuery(ins);
         }catch(SQLException e){
             System.out.println("Something went wrong at the connection");
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void AddNewCar(Car c){
         try{
-            statement.executeUpdate("INSERT INTO cars (serial_num, color, miles, model, brand, make, price, owner_id) values(" +
-                    "'" +c.getSerialNum() + "', ' " + c.getColor() + "', '" + c.getMiles() + "', '" +
-                    c.getModel() + "', '" + c.getBrand() + "','"+c.getMake() +"', '"+ c.getPrice()+"','"+c.getOwnerId()+"');");
-
+            Insert ins = new Insert(c);
+            queryHandler.insertQuery(ins);
         }catch (SQLException ex){
             ex.printStackTrace();
             System.out.println("Something wrong at SQL");
@@ -126,7 +108,9 @@ public class DataBaseServices {
 
     public boolean DeleteCarBySerialNumber(int SerialNumber){
         try {
-            statement.executeUpdate("DELETE FROM cars WHERE serial_num = '" + SerialNumber +"';");
+            Delete del = new Delete();
+            del.setTableName("cars").setWhereClause("serial_num = '" + SerialNumber +"'");
+            queryHandler.deleteQuery(del);
             if(!CheckForCar(SerialNumber))
                 return true;
 
@@ -140,7 +124,10 @@ public class DataBaseServices {
 
     public ResultSet FetchAllCars(int i){
         try{
-           return statement.executeQuery("Select * from cars where owner_id = '"+i+"'");
+            Select sel = new Select();
+            sel.setColumn("*").setTableName("cars").setWhereClause("owner_id = '"+i+"'");
+
+           return queryHandler.SelectQuery(sel);
 
         }catch(SQLException ex){
             System.out.println("could not fetch cars");
@@ -152,7 +139,10 @@ public class DataBaseServices {
 
     public ResultSet FetchAllOffers(){
         try{
-            return statement.executeQuery("Select * from offers where accepted ='false' and pending = 'true';");
+            Select sel = new Select();
+            sel.setColumn("*").setTableName("offers").setWhereClause("accepted ='false'").and()
+                    .setWhereClause("pending = 'true'");
+            return queryHandler.SelectQuery(sel);
         }catch(SQLException ex){
             ex.printStackTrace();
         }catch(Exception ex){
@@ -163,7 +153,9 @@ public class DataBaseServices {
 
     public ResultSet FetchOffers(int i){
         try{
-            return statement.executeQuery("Select * from offers where user_id='"+i+"';");
+            Select sel = new Select();
+            sel.setColumn("*").setTableName("offers").setWhereClause("user_id='"+i+"'");
+            return queryHandler.SelectQuery(sel);
         }catch(SQLException ex){
             ex.printStackTrace();
         }catch(Exception ex){
@@ -174,7 +166,9 @@ public class DataBaseServices {
 
     public ResultSet FetchPayments(int id){
         try{
-            return statement.executeQuery("Select * from payments where user_id='"+id+"' order by payment_date desc LIMIT 5;");
+            Select sel = new Select();
+            sel.setColumn("*").setTableName("payments").setWhereClause("user_id='"+id+"'").setWhereClause("order by payment_date desc LIMIT 5");
+            return queryHandler.SelectQuery(sel);
         }catch(SQLException ex){
             ex.printStackTrace();
         }catch(Exception ex){
@@ -185,7 +179,10 @@ public class DataBaseServices {
 
     public boolean AddNewOffer(int carId, int userId, double offer, int months){
         try{
-            statement.executeUpdate("INSERT INTO offers(car_serial_num,user_id,offer,months) VALUES ('"+carId+"','"+userId+"','"+offer+"','"+months+"');");
+            Insert ins = new Insert();
+            ins.setTableName("offers").setColumns("car_serial_num","user_id","offer","months")
+                    .setValues(String.valueOf(carId),String.valueOf(userId),String.valueOf(offer),String.valueOf(months));
+            queryHandler.insertQuery(ins);
             //TODO: Add a way to verify
             return true;
         } catch (SQLException ex) {
@@ -219,6 +216,9 @@ public class DataBaseServices {
 
     public boolean RejectOffer(Offer offer){
         try{
+            Update upd = new Update();
+            upd.setTableName("offers").setValues("accepted=false","pending=false");
+
             statement.executeUpdate("UPDATE offers SET accepted=false, pending=false WHERE offer_id ='"+offer.getOfferId()+"';");
             return true;
 

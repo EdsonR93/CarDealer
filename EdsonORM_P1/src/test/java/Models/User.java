@@ -4,10 +4,8 @@ import ORM.Anotations.Column;
 import ORM.Anotations.ColumnNotRequired;
 import ORM.Anotations.Table;
 
-import java.util.Arrays;
 @Table(name = "Users")
 public class User {
-
     @Column(name = "user_id")
     @ColumnNotRequired
     private int id;

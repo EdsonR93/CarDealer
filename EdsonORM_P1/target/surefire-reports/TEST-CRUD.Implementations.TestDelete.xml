@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="2" failures="0" name="CRUD.Implementations.TestDelete" time="0.028" errors="1" skipped="0">
+<testsuite tests="10" failures="0" name="CRUD.Implementations.TestDelete" time="0.023" errors="0" skipped="0">
   <properties>
     <property name="idea.version" value="2020.3.3"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
@@ -47,7 +47,7 @@
     <property name="java.vm.specification.version" value="1.8"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.home" value="C:\Program Files\Java\jdk1.8.0_281\jre"/>
-    <property name="sun.java.command" value="org.codehaus.classworlds.Launcher -Didea.version=2020.3.3 verify"/>
+    <property name="sun.java.command" value="org.codehaus.classworlds.Launcher -Didea.version=2020.3.3 clean install"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="user.language" value="en"/>
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
@@ -64,50 +64,14 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="CRUD.Implementations.TestDelete" name="TestMethodSetTableNameReturnTrue" time="0.021"/>
-  <testcase classname="CRUD.Implementations.TestDelete" name="TestMethodSetTableNameReturnFalse" time="0.007">
-    <error message="Unexpected exception, expected&lt;java.lang.NullPointerException&gt; but was&lt;java.lang.AssertionError&gt;" type="java.lang.Exception">java.lang.Exception: Unexpected exception, expected&lt;java.lang.NullPointerException&gt; but was&lt;java.lang.AssertionError&gt;
-	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:30)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
-	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
-	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
-	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
-	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
-	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
-	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
-Caused by: java.lang.AssertionError: expected:&lt;Table1&gt; but was:&lt;null&gt;
-	at org.junit.Assert.fail(Assert.java:89)
-	at org.junit.Assert.failNotEquals(Assert.java:835)
-	at org.junit.Assert.assertEquals(Assert.java:120)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at CRUD.Implementations.TestDelete.TestMethodSetTableNameReturnFalse(TestDelete.java:24)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:19)
-	... 24 more
-</error>
-  </testcase>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testOr_whileWhereClauseIsEmpty_ShouldNotAddAnd" time="0.017"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testSetTableName_nullValue_" time="0"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testAnd_whileWhereClauseIsEmpty_ShouldNotAddAnd" time="0"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testSetTableName_emptyValue_shouldBeNotEquals" time="0"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testAnd_withWhereClause_ShouldAddAnd" time="0"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testOr_withWhereClause_ShouldAddAnd" time="0"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testSetTableName_validValue_shouldBeEquals" time="0"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testBuildDeleteQuery_withValidData_shouldPass" time="0"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testBuildDeleteQuery_withNoWhereClause_shouldThrowException" time="0.005"/>
+  <testcase classname="CRUD.Implementations.TestDelete" name="testBuildDeleteQuery_withNoTableName_shouldThrowException" time="0.001"/>
 </testsuite>

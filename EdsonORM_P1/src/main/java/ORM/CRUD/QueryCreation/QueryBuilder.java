@@ -161,7 +161,7 @@ public class QueryBuilder implements StatementBuilder<QueryBuilder> {
         Iterator<String> iter = values.iterator();
         while (iter.hasNext()){
             while (iter.hasNext()){
-                updateQuery.append("'").append(iter.next()).append("'");
+                updateQuery.append(iter.next());
                 if(iter.hasNext())
                     updateQuery.append(", ");
             }

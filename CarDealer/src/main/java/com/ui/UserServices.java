@@ -1,13 +1,13 @@
 package com.ui;
 
 import com.Model.User;
-import com.database.DataBaseServices;
+import com.database.DBHandler;
 
 import java.util.Scanner;
 
 public class UserServices {
     Scanner scan = new Scanner(System.in);
-    private final DataBaseServices DB = DataBaseServices.getInstance();
+    private final DBHandler DB = DBHandler.getInstance();
 
     private UserServices(){}
     private static UserServices instance;

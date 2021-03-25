@@ -1,13 +1,34 @@
 package com.Model;
 
+import ORM.Anotations.Column;
+import ORM.Anotations.ColumnNotRequired;
+import ORM.Anotations.Table;
+
+@Table(name = "cars")
 public class Car {
+
+    @Column(name = "serial_num")
     private final int serialNum;
+
+    @Column(name="model")
     private int model;
+
+    @Column(name="brand")
     private String brand;
+
+    @Column(name="make")
     private String make;
+
+    @Column(name="miles")
     private int miles;
+
+    @Column(name="color")
     private String color;
+
+    @Column(name="price")
     private float price;
+
+    @Column(name="owner_id")
     private int ownerId;
 
     public Car(int serialNum, int model, String brand, String make, String color, int miles, float price, int ownerId) {
