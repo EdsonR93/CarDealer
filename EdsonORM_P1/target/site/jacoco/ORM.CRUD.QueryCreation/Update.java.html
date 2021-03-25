@@ -109,7 +109,7 @@ public class Update implements UpdateQuery&lt;Update&gt; {
 
 <span class="nc bnc" id="L110" title="All 2 branches missed.">        while (iter.hasNext()){</span>
 <span class="nc bnc" id="L111" title="All 2 branches missed.">            while (iter.hasNext()){</span>
-<span class="nc" id="L112">                updateQuery.append(&quot;'&quot;).append(iter.next()).append(&quot;'&quot;);</span>
+<span class="nc" id="L112">                updateQuery.append(iter.next());</span>
 <span class="nc bnc" id="L113" title="All 2 branches missed.">                if(iter.hasNext())</span>
 <span class="nc" id="L114">                    updateQuery.append(&quot;, &quot;);</span>
             }

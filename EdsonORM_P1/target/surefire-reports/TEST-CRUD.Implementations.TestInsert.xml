@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="20" failures="0" name="CRUD.Implementations.TestInsert" time="0.013" errors="0" skipped="0">
+<testsuite tests="20" failures="0" name="CRUD.Implementations.TestInsert" time="0.012" errors="0" skipped="0">
   <properties>
     <property name="idea.version" value="2020.3.3"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
@@ -83,5 +83,5 @@
   <testcase classname="CRUD.Implementations.TestInsert" name="testSetValue_validValue_shouldBeEquals" time="0"/>
   <testcase classname="CRUD.Implementations.TestInsert" name="testSetValue_emptyValue_shouldBeEquals" time="0"/>
   <testcase classname="CRUD.Implementations.TestInsert" name="testSetValues_emptyValue_shouldBeNotEquals" time="0"/>
-  <testcase classname="CRUD.Implementations.TestInsert" name="testBuildInsertQuery_withNoTableName_shouldThrowException" time="0.001"/>
+  <testcase classname="CRUD.Implementations.TestInsert" name="testBuildInsertQuery_withNoTableName_shouldThrowException" time="0"/>
 </testsuite>

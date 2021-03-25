@@ -161,7 +161,7 @@ public class QueryBuilder implements StatementBuilder&lt;QueryBuilder&gt; {
 <span class="nc" id="L161">        Iterator&lt;String&gt; iter = values.iterator();</span>
 <span class="nc bnc" id="L162" title="All 2 branches missed.">        while (iter.hasNext()){</span>
 <span class="nc bnc" id="L163" title="All 2 branches missed.">            while (iter.hasNext()){</span>
-<span class="nc" id="L164">                updateQuery.append(&quot;'&quot;).append(iter.next()).append(&quot;'&quot;);</span>
+<span class="nc" id="L164">                updateQuery.append(iter.next());</span>
 <span class="nc bnc" id="L165" title="All 2 branches missed.">                if(iter.hasNext())</span>
 <span class="nc" id="L166">                    updateQuery.append(&quot;, &quot;);</span>
             }

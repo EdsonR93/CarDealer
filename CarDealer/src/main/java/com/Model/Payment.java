@@ -33,6 +33,14 @@ public class Payment {
         this.paymentDate = paymentDate;
     }
 
+    public Payment(int userId, int carSerialNum, double paymentAmount){
+        this.paymentId = 0;
+        this.userId = userId;
+        this.carSerialNum = carSerialNum;
+        this.paymentAmount = paymentAmount;
+        this.paymentDate = null;
+    }
+
     public int getPaymentId() {
         return paymentId;
     }

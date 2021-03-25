@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class UserServices {
     Scanner scan = new Scanner(System.in);
-    private final DBHandler DB = DBHandler.getInstance();
+    private final DBHandler DB = DBHandler.INSTANCE;
 
     private UserServices(){}
     private static UserServices instance;

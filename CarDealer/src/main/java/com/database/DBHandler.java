@@ -9,12 +9,13 @@ import com.Model.*;
 
 import java.sql.*;
 
-public class DBHandler {
+public enum DBHandler {
+    INSTANCE;
 
     QueryHandler queryHandler;
 
 
-    private DBHandler(){
+    DBHandler(){
         try{
             queryHandler = new QueryHandler(DBServices.INSTANCE.getConnection());
 
@@ -23,7 +24,7 @@ public class DBHandler {
         }
     }
 
-    public boolean CheckForUsername(String newUsername){
+    synchronized public boolean CheckForUsername(String newUsername){
         try{
             Select sel = new Select();
             sel.setColumn("username").setTableName("users").setWhereClause("username='"+newUsername+"'");
@@ -37,7 +38,7 @@ public class DBHandler {
         return true;
     }
 
-    public boolean CheckForCar(int SN){
+    synchronized public boolean CheckForCar(int SN){
         try{
             Select sel = new Select();
             sel.setColumn("serial_num").setTableName("cars").setWhereClause("serial_num='"+SN+"'");
@@ -49,7 +50,7 @@ public class DBHandler {
         }
         return true;
     }
-    public ResultSet FetchPaymentPlans (int userId){
+    synchronized public ResultSet FetchPaymentPlans (int userId){
         try{
             Select sel = new Select();
             sel.setColumn("*").setTableName("payment_plan").setWhereClause("user_id ='"+userId+"'").and()
@@ -61,7 +62,7 @@ public class DBHandler {
         return null;
     }
 
-    public User Login(String username, String pass) {
+    synchronized public User Login(String username, String pass) {
         try {
             Select sel = new Select();
             sel.setColumn("*").setTableName("users").setWhereClause("username='" + username + "'").and()
@@ -82,7 +83,7 @@ public class DBHandler {
         return null;
     }
 
-    public void AddNewUser(User u){
+    synchronized public void AddNewUser(User u){
         try {
             Insert ins = new Insert(u);
             queryHandler.insertQuery(ins);
@@ -94,7 +95,7 @@ public class DBHandler {
         }
     }
 
-    public void AddNewCar(Car c){
+    synchronized public void AddNewCar(Car c){
         try{
             Insert ins = new Insert(c);
             queryHandler.insertQuery(ins);
@@ -106,7 +107,7 @@ public class DBHandler {
         }
     }
 
-    public boolean DeleteCarBySerialNumber(int SerialNumber){
+    synchronized public boolean DeleteCarBySerialNumber(int SerialNumber){
         try {
             Delete del = new Delete();
             del.setTableName("cars").setWhereClause("serial_num = '" + SerialNumber +"'");
@@ -122,7 +123,7 @@ public class DBHandler {
         return false;
     }
 
-    public ResultSet FetchAllCars(int i){
+    synchronized public ResultSet FetchAllCars(int i){
         try{
             Select sel = new Select();
             sel.setColumn("*").setTableName("cars").setWhereClause("owner_id = '"+i+"'");
@@ -137,7 +138,7 @@ public class DBHandler {
         return null;
     }
 
-    public ResultSet FetchAllOffers(){
+    synchronized public ResultSet FetchAllOffers(){
         try{
             Select sel = new Select();
             sel.setColumn("*").setTableName("offers").setWhereClause("accepted ='false'").and()
@@ -151,7 +152,7 @@ public class DBHandler {
         return null;
     }
 
-    public ResultSet FetchOffers(int i){
+    synchronized public ResultSet FetchOffers(int i){
         try{
             Select sel = new Select();
             sel.setColumn("*").setTableName("offers").setWhereClause("user_id='"+i+"'");
@@ -164,7 +165,7 @@ public class DBHandler {
         return null;
     }
 
-    public ResultSet FetchPayments(int id){
+    synchronized public ResultSet FetchPayments(int id){
         try{
             Select sel = new Select();
             sel.setColumn("*").setTableName("payments").setWhereClause("user_id='"+id+"'").setWhereClause("order by payment_date desc LIMIT 5");
@@ -177,7 +178,7 @@ public class DBHandler {
         return null;
     }
 
-    public boolean AddNewOffer(int carId, int userId, double offer, int months){
+    synchronized public boolean AddNewOffer(int carId, int userId, double offer, int months){
         try{
             Insert ins = new Insert();
             ins.setTableName("offers").setColumns("car_serial_num","user_id","offer","months")
@@ -194,16 +195,26 @@ public class DBHandler {
         return false;
     }
 
-    public boolean AcceptOffer(Offer offer){
+    synchronized public boolean AcceptOffer(Offer offer){
         try{
             double monthlyPayment = offer.getAmountOffered() / offer.getMonths();
-            PreparedStatement ps = c1.prepareStatement("SELECT accept_offer(?,?);");
-            ps.setInt(1,offer.getOfferId());
-            ps.setInt(2,offer.getCarSerialNum());
-            ps.executeQuery();
-            statement.executeUpdate("UPDATE cars SET owner_id = '"+offer.getUserId()+"', price = '"+offer.getAmountOffered()+"' WHERE serial_num ='"+offer.getCarSerialNum()+ "';");
-            statement.executeUpdate("INSERT INTO payment_plan(user_id,car_serial_num,monthly_payment,total_months,months_left)" +
-                    " VALUES('"+offer.getUserId()+"','"+offer.getCarSerialNum()+"','"+monthlyPayment+"','"+offer.getMonths()+"','"+offer.getMonths()+"')");
+
+            Update upd = new Update();
+            upd.setTableName("offers").setValues("pending=false").setWhereClause("car_serial_num ='"+offer.getCarSerialNum()+"'");
+            queryHandler.updateQuery(upd);
+
+            upd = new Update();
+            upd.setTableName("offers").setValues("accepted=true","pending=false")
+                    .setWhereClause("offer_id ='"+offer.getOfferId()+"'");
+            queryHandler.updateQuery(upd);
+
+            upd = new Update();
+            upd.setTableName("cars").setValues("owner_id = '"+offer.getUserId()+"'","price = '"+offer.getAmountOffered()+"'")
+                    .setWhereClause("serial_num ='"+offer.getCarSerialNum()+ "'");
+            queryHandler.updateQuery(upd);
+
+            Insert ins = new Insert(offer);
+            queryHandler.insertQuery(ins);
             return true;
 
         } catch (SQLException ex) {
@@ -214,12 +225,12 @@ public class DBHandler {
         return false;
     }
 
-    public boolean RejectOffer(Offer offer){
+    synchronized public boolean RejectOffer(Offer offer){
         try{
             Update upd = new Update();
-            upd.setTableName("offers").setValues("accepted=false","pending=false");
-
-            statement.executeUpdate("UPDATE offers SET accepted=false, pending=false WHERE offer_id ='"+offer.getOfferId()+"';");
+            upd.setTableName("offers").setValues("accepted=false","pending=false")
+                    .setWhereClause("offer_id ='"+offer.getOfferId()+"'");
+            queryHandler.updateQuery(upd);
             return true;
 
         } catch (SQLException ex) {
@@ -230,11 +241,12 @@ public class DBHandler {
             return false;
     }
 
-    public boolean RegisterPayment(PaymentPlan p){
+    synchronized public boolean RegisterPayment(PaymentPlan p){
         try{
-            statement.executeUpdate("UPDATE payment_plan SET months_left = '"+(p.getMonthsLeft()-1)+"';");
-            statement.executeUpdate("INSERT INTO payments(user_id,car_serial_num,payment_amount)" +
-                    " VALUES ('"+p.getUserId()+"','"+p.getCarSerialNum()+"','"+p.getMonthlyPayment()+"');");
+            Update upd = new Update(p);
+            queryHandler.updateQuery(upd);
+            Insert ins = new Insert(new Payment(p.getUserId(),p.getCarSerialNum(),p.getMonthlyPayment()));
+            queryHandler.insertQuery(ins);
             return true;
         }catch (SQLException ex) {
             ex.printStackTrace();
