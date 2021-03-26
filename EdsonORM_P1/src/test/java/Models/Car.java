@@ -2,11 +2,12 @@ package Models;
 
 import ORM.Anotations.Column;
 import ORM.Anotations.ColumnNotRequired;
+import ORM.Anotations.PrimaryKey;
 import ORM.Anotations.Table;
 
 @Table(name = "cars")
 public class Car {
-
+    @PrimaryKey
     @ColumnNotRequired
     @Column(name = "serial_num")
     private final int serialNum;

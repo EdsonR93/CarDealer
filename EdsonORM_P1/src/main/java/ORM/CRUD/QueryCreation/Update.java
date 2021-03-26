@@ -2,6 +2,7 @@ package ORM.CRUD.QueryCreation;
 
 import ORM.Anotations.Column;
 import ORM.Anotations.ColumnNotRequired;
+import ORM.Anotations.PrimaryKey;
 import ORM.Anotations.Table;
 import ORM.CustomeExceptions.NoTableFoundException;
 import ORM.CustomeExceptions.NoValuesFoundException;
@@ -25,26 +26,33 @@ public class Update implements UpdateQuery<Update> {
         values = new Vector<>();
     }
 
-//    public Update(Object obj) throws IllegalAccessException {
-//        Class<?> cl = obj.getClass();
-//
-//        Table table = cl.getAnnotation(Table.class);
-//        if(table!=null)
-//            setTableName(table.name());
-//
-//        Field[] fields = cl.getDeclaredFields();
-//        Column col;
-//        ColumnNotRequired notReqCol;
-//
-//        for(Field var : fields){
-//            var.setAccessible(true);
-//            col = var.getAnnotation(Column.class);
-//            notReqCol = var.getAnnotation(ColumnNotRequired.class);
-//            if(col!=null && notReqCol==null){
-//                setValue(var.get(obj).toString());
-//            }
-//        }
-//    }
+    public Update(Object obj) throws IllegalAccessException {
+        this();
+        Class<?> cl = obj.getClass();
+
+        Table table = cl.getAnnotation(Table.class);
+        if(table!=null)
+            setTableName(table.name());
+
+        Field[] fields = cl.getDeclaredFields();
+        Column col;
+        ColumnNotRequired notReqCol;
+        PrimaryKey pk;
+
+        for(Field var : fields){
+            var.setAccessible(true);
+            col = var.getAnnotation(Column.class);
+            notReqCol = var.getAnnotation(ColumnNotRequired.class);
+            pk = var.getAnnotation(PrimaryKey.class);
+            if(col!=null && notReqCol==null){
+                setValue(col.name() +" = '" +var.get(obj).toString() +"'");
+            }
+            if(pk!=null && col!=null)
+                setWhereClause(col.name() +" = '" +var.get(obj).toString() +"'");
+        }
+
+
+    }
 
 
     @Override

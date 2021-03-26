@@ -2,10 +2,12 @@ package Models;
 
 import ORM.Anotations.Column;
 import ORM.Anotations.ColumnNotRequired;
+import ORM.Anotations.PrimaryKey;
 import ORM.Anotations.Table;
 
 @Table(name = "Users")
 public class User {
+    @PrimaryKey
     @Column(name = "user_id")
     @ColumnNotRequired
     private int id;

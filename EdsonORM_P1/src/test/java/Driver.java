@@ -1,9 +1,10 @@
+import Models.User;
 import ORM.CRUD.QueryCreation.Update;
 
 public class Driver {
 
     public static void main(String[] args) throws Exception {
-//        User user = new User(2,false,"username","pass","name","lastname");
+        User user = new User(2,false,"username","pass","name","lastname");
 //        Insert ins = new Insert(user);
 //
 //        System.out.println(ins.buildInsertQuery());
@@ -11,7 +12,7 @@ public class Driver {
 
 //        Select sel = new Select(car);
 //        Delete del = new Delete();
-        Update upd = new Update();
+        Update upd = new Update(user);
 //        QueryBuilder qb = new QueryBuilder(car);
 
 
@@ -47,7 +48,7 @@ public class Driver {
 //        upd.setTableName("Cars");
 //        upd.setValue("col1 = 'd'");
 //        upd.setWhereClause("col2 = '8'");
-//        System.out.println(upd.buildUpdateQuery());
+        System.out.println(upd.buildUpdateQuery());
 
 
     }
