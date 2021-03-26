@@ -1,3 +1,5 @@
+import ORM.CRUD.QueryCreation.Update;
+
 public class Driver {
 
     public static void main(String[] args) throws Exception {
@@ -9,7 +11,7 @@ public class Driver {
 
 //        Select sel = new Select(car);
 //        Delete del = new Delete();
-//        Update upd = new Update();
+        Update upd = new Update();
 //        QueryBuilder qb = new QueryBuilder(car);
 
 
@@ -43,9 +45,10 @@ public class Driver {
 //        System.out.println(del.buildDeleteQuery());
 //
 //        upd.setTableName("Cars");
-//        upd.setValue("F = 'd'");
-//        upd.setWhereClause("f='8'");
+//        upd.setValue("col1 = 'd'");
+//        upd.setWhereClause("col2 = '8'");
 //        System.out.println(upd.buildUpdateQuery());
+
 
     }
 
