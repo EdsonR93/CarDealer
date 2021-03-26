@@ -74,8 +74,9 @@ public class CarServices {
             }else{
                 System.out.println("No cars to show");
             }
+            rs.beforeFirst();
             return cars;
-        }catch(SQLException ex){
+        }catch(Exception ex){
             ex.printStackTrace();
         }
 

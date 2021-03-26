@@ -74,7 +74,7 @@ public class CustomerDriver {
                         break;
                     }
                     case 2:{
-                        //TODO: Refactor to show better view of cars owned
+
                         CarHashSet cars = carServices.getCars(user.getId());
                         if(cars!=null && cars.Size()>0) {
                             menus.printCarsTable();

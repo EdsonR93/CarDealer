@@ -1,6 +1,6 @@
 package com.database;
 
-import java.sql.ResultSet;
+import com.Collection.GenCollection;
 
 public enum LocalDatabase {
     INSTANCE;
@@ -8,7 +8,7 @@ public enum LocalDatabase {
     private int current = 0;
     private DBNode[] nodeArray = new DBNode[10];
 
-    synchronized public ResultSet contains(String query){
+    synchronized public GenCollection contains(String query){
         for(DBNode node : nodeArray){
             if(node!=null && node.query.equalsIgnoreCase(query)){
                 return node.data;
@@ -17,9 +17,9 @@ public enum LocalDatabase {
         return null;
     }
 
-    synchronized public void add(String query,ResultSet res){
+    synchronized public void add(String query,GenCollection col){
         if(current<=9){
-            nodeArray[current++] = new DBNode(query,res);
+            nodeArray[current++] = new DBNode(query,col);
         }else{
             current = 0;
         }
@@ -34,10 +34,10 @@ public enum LocalDatabase {
 
 class DBNode{
     String query;
-    ResultSet data;
+    GenCollection data;
 
-    public DBNode(String s, ResultSet r){
+public DBNode(String s, GenCollection c){
         query = s;
-        data = r;
+        data = c;
     }
 }

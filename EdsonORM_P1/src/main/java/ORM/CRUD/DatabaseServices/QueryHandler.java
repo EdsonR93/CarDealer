@@ -18,7 +18,7 @@ public class QueryHandler implements StatementHandler{
 
     public QueryHandler(Connection conn) throws SQLException {
         this.conn = conn;
-        statement = conn.createStatement();
+        statement = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
     }
 
     @Override

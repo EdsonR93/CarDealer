@@ -73,14 +73,14 @@
   <testcase classname="CRUD.Implementations.TestInsert" name="testSetColumns_nullValue_shouldBeNotEquals" time="0"/>
   <testcase classname="CRUD.Implementations.TestInsert" name="testSetValue_nullValue_shouldBeNotEquals" time="0"/>
   <testcase classname="CRUD.Implementations.TestInsert" name="testSetTableName_nullValue_shouldBeNotEquals" time="0"/>
-  <testcase classname="CRUD.Implementations.TestInsert" name="testInsertObject_withColumnAnnotation_shouldBeEquals" time="0.009"/>
+  <testcase classname="CRUD.Implementations.TestInsert" name="testInsertObject_withColumnAnnotation_shouldBeEquals" time="0.008"/>
   <testcase classname="CRUD.Implementations.TestInsert" name="testSetTableName_validValue_shouldBeEquals" time="0"/>
   <testcase classname="CRUD.Implementations.TestInsert" name="testInsertObject_withColumnNotRequiredAnnotation_shouldBeEquals" time="0.002"/>
   <testcase classname="CRUD.Implementations.TestInsert" name="testSetColumn_nullValue_shouldBeNotEquals" time="0"/>
-  <testcase classname="CRUD.Implementations.TestInsert" name="testBuildInsertQuery_withDifferentAmountOfColAndVal_shouldThrowException" time="0"/>
+  <testcase classname="CRUD.Implementations.TestInsert" name="testBuildInsertQuery_withDifferentAmountOfColAndVal_shouldThrowException" time="0.001"/>
   <testcase classname="CRUD.Implementations.TestInsert" name="testSetValues_validValue_shouldBeEquals" time="0"/>
-  <testcase classname="CRUD.Implementations.TestInsert" name="testSetColumns_emptyValue_shouldBeNotEquals" time="0.001"/>
-  <testcase classname="CRUD.Implementations.TestInsert" name="testSetValue_validValue_shouldBeEquals" time="0"/>
+  <testcase classname="CRUD.Implementations.TestInsert" name="testSetColumns_emptyValue_shouldBeNotEquals" time="0"/>
+  <testcase classname="CRUD.Implementations.TestInsert" name="testSetValue_validValue_shouldBeEquals" time="0.001"/>
   <testcase classname="CRUD.Implementations.TestInsert" name="testSetValue_emptyValue_shouldBeEquals" time="0"/>
   <testcase classname="CRUD.Implementations.TestInsert" name="testSetValues_emptyValue_shouldBeNotEquals" time="0"/>
   <testcase classname="CRUD.Implementations.TestInsert" name="testBuildInsertQuery_withNoTableName_shouldThrowException" time="0"/>

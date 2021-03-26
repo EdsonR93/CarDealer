@@ -16,6 +16,7 @@ public enum DBHandler {
     INSTANCE;
 
     QueryHandler queryHandler;
+    LocalDatabase localDatabase = LocalDatabase.INSTANCE;
     DBHandler(){
         try{
             queryHandler = new QueryHandler(DBServices.INSTANCE.getConnection());
@@ -29,13 +30,8 @@ public enum DBHandler {
         try{
             Select sel = new Select();
             sel.setColumn("username").setTableName("users").setWhereClause("username='"+newUsername+"'");
-            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
-            if(result!=null){
-                return result.next();
-            }else{
-                result = queryHandler.SelectQuery(sel);
-                return result.next();
-            }
+            ResultSet result = queryHandler.SelectQuery(sel);
+
         }catch(SQLException sqlEx){
             System.out.println("Could not verify user, connection failed?");
             sqlEx.printStackTrace();
@@ -47,10 +43,7 @@ public enum DBHandler {
         try{
             Select sel = new Select();
             sel.setColumn("serial_num").setTableName("cars").setWhereClause("serial_num='"+SN+"'");
-            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
-            if (result == null) {
-                result = queryHandler.SelectQuery(sel);
-            }
+            ResultSet result = queryHandler.SelectQuery(sel);
             return result.next();
         }catch(SQLException ex){
             ex.printStackTrace();
@@ -63,13 +56,7 @@ public enum DBHandler {
             Select sel = new Select();
             sel.setColumn("*").setTableName("payment_plan").setWhereClause("user_id ='"+userId+"'").and()
                     .setWhereClause("months_left > '0'");
-            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
-            if(result!=null){
-                return result;
-            }else{
-                result = queryHandler.SelectQuery(sel);
-                return result;
-            }
+            return queryHandler.SelectQuery(sel);
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -102,13 +89,7 @@ public enum DBHandler {
             Select sel = new Select();
             sel.setColumn("*").setTableName("cars").setWhereClause("owner_id = '"+i+"'");
 
-            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
-            if(result!=null){
-                return result;
-            }else{
-                result = queryHandler.SelectQuery(sel);
-                return result;
-            }
+            return queryHandler.SelectQuery(sel);
 
         }catch(SQLException ex){
             System.out.println("could not fetch cars");
@@ -123,13 +104,7 @@ public enum DBHandler {
             Select sel = new Select();
             sel.setColumn("*").setTableName("offers").setWhereClause("accepted ='false'").and()
                     .setWhereClause("pending = 'true'");
-            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
-            if(result!=null){
-                return result;
-            }else{
-                result = queryHandler.SelectQuery(sel);
-                return result;
-            }
+            return queryHandler.SelectQuery(sel);
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -140,13 +115,7 @@ public enum DBHandler {
         try{
             Select sel = new Select();
             sel.setColumn("*").setTableName("offers").setWhereClause("user_id='"+i+"'");
-            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
-            if(result!=null){
-                return result;
-            }else{
-                result = queryHandler.SelectQuery(sel);
-                return result;
-            }
+            return queryHandler.SelectQuery(sel);
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -157,13 +126,7 @@ public enum DBHandler {
         try{
             Select sel = new Select();
             sel.setColumn("*").setTableName("payments").setWhereClause("user_id='"+id+"'").setWhereClause("order by payment_date desc LIMIT 5");
-            ResultSet result = LocalDatabase.INSTANCE.contains(sel.buildSelectStatement());
-            if(result!=null){
-                return result;
-            }else{
-                result = queryHandler.SelectQuery(sel);
-                return result;
-            }
+            return queryHandler.SelectQuery(sel);
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -178,6 +141,7 @@ public enum DBHandler {
                 ins.setTableName("offers").setColumns("car_serial_num","user_id","offer","months")
                         .setValues(String.valueOf(carId),String.valueOf(userId),String.valueOf(offer),String.valueOf(months));
                 int i = queryHandler.insertQuery(ins);
+                localDatabase.flush();
                 return i > 0;
             }
         };
@@ -214,6 +178,7 @@ public enum DBHandler {
                 Insert ins = new Insert(offer);
                 queryHandler.insertQuery(ins);
 
+                localDatabase.flush();
                 return true;
             }
         };
@@ -235,6 +200,7 @@ public enum DBHandler {
                 upd.setTableName("offers").setValues("accepted=false","pending=false")
                         .setWhereClause("offer_id ='"+offer.getOfferId()+"'");
                 int i = queryHandler.updateQuery(upd);
+                localDatabase.flush();
                 return i>0;
             }
         };
@@ -256,6 +222,8 @@ public enum DBHandler {
                 i+= queryHandler.updateQuery(upd);
                 Insert ins = new Insert(new Payment(p.getUserId(),p.getCarSerialNum(),p.getMonthlyPayment()));
                 i+= queryHandler.insertQuery(ins);
+
+                localDatabase.flush();
                 return i>1;
             }
         };
@@ -276,6 +244,7 @@ public enum DBHandler {
                 final Delete del = new Delete();
                 del.setTableName("cars").setWhereClause("serial_num = '" + SerialNumber +"'");
                 int i = queryHandler.deleteQuery(del);
+                localDatabase.flush();
                 return i>0;
             }
         };
@@ -295,6 +264,7 @@ public enum DBHandler {
                 try {
                     Insert ins = new Insert(u);
                     queryHandler.insertQuery(ins);
+                    localDatabase.flush();
                 } catch (SQLException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -308,6 +278,7 @@ public enum DBHandler {
             public Boolean call() throws Exception {
                 Insert ins = new Insert(c);
                 int i = queryHandler.insertQuery(ins);
+                localDatabase.flush();
                 return i>0;
             }
         };

@@ -3,7 +3,7 @@ package com.Collection;
 
 import com.Model.Offer;
 
-public abstract class GenericCollection<T> {
+public abstract class GenericCollection<T> implements GenCollection{
 
     private static final int INITIAL_CAPACITY = 8;
     private int size;
