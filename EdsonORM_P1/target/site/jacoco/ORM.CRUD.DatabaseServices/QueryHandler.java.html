@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EdsonORM_P1</a> &gt; <a href="index.source.html" class="el_package">ORM.CRUD.DatabaseServices</a> &gt; <span class="el_source">QueryHandler.java</span></div><h1>QueryHandler.java</h1><pre class="source lang-java linenums">package ORM.CRUD.DatabaseServices;
+
+import ORM.CRUD.Interfaces.StatementHandler;
+import ORM.CRUD.QueryCreation.Delete;
+import ORM.CRUD.QueryCreation.Insert;
+import ORM.CRUD.QueryCreation.Select;
+import ORM.CRUD.QueryCreation.Update;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class QueryHandler implements StatementHandler{
+
+    private final Connection conn;
+    private Statement statement;
+
+<span class="nc" id="L19">    public QueryHandler(Connection conn) throws SQLException {</span>
+<span class="nc" id="L20">        this.conn = conn;</span>
+<span class="nc" id="L21">        statement = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);</span>
+<span class="nc" id="L22">    }</span>
+
+    @Override
+    synchronized public int insertQuery(Insert ins) throws SQLException {
+<span class="nc" id="L26">        return statement.executeUpdate(ins.buildInsertQuery());</span>
+    }
+
+    @Override
+    synchronized public ResultSet SelectQuery(Select sel) throws SQLException {
+<span class="nc" id="L31">        return statement.executeQuery(sel.buildSelectStatement());</span>
+    }
+
+    @Override
+    synchronized public int updateQuery(Update upd) throws SQLException {
+<span class="nc" id="L36">        return statement.executeUpdate(upd.buildUpdateQuery());</span>
+    }
+
+    @Override
+    synchronized public int deleteQuery(Delete del) throws SQLException {
+<span class="nc" id="L41">        return statement.executeUpdate(del.buildDeleteQuery());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

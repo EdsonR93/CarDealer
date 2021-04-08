@@ -1,13 +1,34 @@
 package com.Model;
 
+import ORM.Anotations.Column;
+import ORM.Anotations.ColumnNotRequired;
+import ORM.Anotations.Table;
+
+@Table(name = "cars")
 public class Car {
+
+    @Column(name = "serial_num")
     private final int serialNum;
+
+    @Column(name="model")
     private int model;
+
+    @Column(name="brand")
     private String brand;
+
+    @Column(name="make")
     private String make;
+
+    @Column(name="miles")
     private int miles;
+
+    @Column(name="color")
     private String color;
+
+    @Column(name="price")
     private float price;
+
+    @Column(name="owner_id")
     private int ownerId;
 
     public Car(int serialNum, int model, String brand, String make, String color, int miles, float price, int ownerId) {
@@ -83,15 +104,7 @@ public class Car {
 
     @Override
     public String toString() {
-        return "Car{" +
-                "id=" + serialNum +
-                ", model=" + model +
-                ", brand='" + brand + '\'' +
-                ", make='" + make + '\'' +
-                ", miles=" + miles +
-                ", color='" + color + '\'' +
-                ", price=" + price +
-                ", owner_id=" + ownerId +
-                '}';
+
+        return String.format("%10s\t%10s\t%10s\t%10s\t%10s\t%10s\t%10s\t%10s", serialNum, model, brand, make, miles, color, price, ownerId);
     }
 }

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Insert.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EdsonORM_P1</a> &gt; <a href="index.source.html" class="el_package">ORM.CRUD.QueryCreation</a> &gt; <span class="el_source">Insert.java</span></div><h1>Insert.java</h1><pre class="source lang-java linenums">package ORM.CRUD.QueryCreation;
+
+import ORM.Anotations.Column;
+import ORM.Anotations.ColumnNotRequired;
+import ORM.Anotations.Table;
+import ORM.CustomeExceptions.NoTableFoundException;
+import ORM.CRUD.Interfaces.InsertQuery;
+import ORM.CustomeExceptions.NotSameAmountOfColumnAndValuesException;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+public class Insert implements InsertQuery&lt;Insert&gt; {
+
+    private String tableName;
+    private List&lt;String&gt; columns;
+    private List&lt;String&gt; values;
+
+<span class="fc" id="L22">    public Insert(){</span>
+<span class="fc" id="L23">        values = new Vector&lt;&gt;();</span>
+<span class="fc" id="L24">        columns = new Vector&lt;&gt;();</span>
+<span class="fc" id="L25">    }</span>
+    public Insert(Object o) throws NoTableFoundException, IllegalAccessException {
+<span class="fc" id="L27">        this();</span>
+<span class="fc" id="L28">        Class&lt;?&gt; cl = o.getClass();</span>
+
+<span class="fc" id="L30">        Table table = cl.getAnnotation(Table.class);</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        if(table!=null)</span>
+<span class="fc" id="L32">            setTableName(table.name());</span>
+
+<span class="fc" id="L34">        Field[] fields = cl.getDeclaredFields();</span>
+        Column col;
+        ColumnNotRequired notReqCol;
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for(Field var : fields){</span>
+<span class="fc" id="L39">            var.setAccessible(true);</span>
+<span class="fc" id="L40">            col = var.getAnnotation(Column.class);</span>
+<span class="fc" id="L41">            notReqCol = var.getAnnotation(ColumnNotRequired.class);</span>
+<span class="fc bfc" id="L42" title="All 4 branches covered.">            if(col!=null &amp;&amp; notReqCol==null){</span>
+<span class="fc" id="L43">                setColumn(col.name());</span>
+<span class="fc" id="L44">                setValue(var.get(o).toString());</span>
+            }
+        }
+<span class="fc" id="L47">    }</span>
+
+    public String getTableName() {
+<span class="fc" id="L50">        return tableName;</span>
+    }
+
+    public List&lt;String&gt; getColumns() {
+<span class="fc" id="L54">        return columns;</span>
+    }
+
+    public List&lt;String&gt; getValues() {
+<span class="fc" id="L58">        return values;</span>
+    }
+
+    @Override
+    synchronized public Insert setColumn(String column) {
+<span class="fc bfc" id="L63" title="All 4 branches covered.">        if(column!=null &amp;&amp; !column.equals(&quot;&quot;))</span>
+<span class="fc" id="L64">            columns.add(column);</span>
+<span class="fc" id="L65">        return this;</span>
+    }
+
+    @Override
+    synchronized public Insert setColumns(String... columns){
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (String col : columns){</span>
+<span class="fc bfc" id="L71" title="All 4 branches covered.">            if(col!=null &amp;&amp; !col.equals(&quot;&quot;)){</span>
+<span class="fc" id="L72">                this.columns.add(col);</span>
+            }
+        }
+<span class="fc" id="L75">        return this;</span>
+    }
+
+    @Override
+    synchronized public Insert setTableName(String tableName) {
+<span class="fc bfc" id="L80" title="All 4 branches covered.">        if(tableName!=null &amp;&amp; !tableName.equals(&quot;&quot;))</span>
+<span class="fc" id="L81">            this.tableName = tableName;</span>
+<span class="fc" id="L82">        return this;</span>
+    }
+
+    @Override
+    synchronized public Insert setValue(String value) {
+<span class="fc bfc" id="L87" title="All 4 branches covered.">        if(value!=null &amp;&amp; !value.equals(&quot;&quot;))</span>
+<span class="fc" id="L88">            values.add(value);</span>
+<span class="fc" id="L89">        return this;</span>
+    }
+
+    @Override
+    synchronized public Insert setValues(String... values) {
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        for(String val : values){</span>
+<span class="fc bfc" id="L95" title="All 4 branches covered.">            if(val!=null &amp;&amp; !val.equals(&quot;&quot;))</span>
+<span class="fc" id="L96">                this.values.add(val);</span>
+        }
+
+<span class="fc" id="L99">        return this;</span>
+    }
+
+    @Override
+    synchronized public String buildInsertQuery() throws NoTableFoundException, NotSameAmountOfColumnAndValuesException {
+<span class="pc bpc" id="L104" title="1 of 4 branches missed.">        if(tableName == null || tableName.equals(&quot;&quot;) )</span>
+<span class="fc" id="L105">            throw new NoTableFoundException();</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if(columns.size() != values.size())</span>
+<span class="fc" id="L107">            throw new NotSameAmountOfColumnAndValuesException();</span>
+
+<span class="fc" id="L109">        StringBuilder insertQuery = new StringBuilder();</span>
+<span class="fc" id="L110">        Iterator&lt;String&gt; iter = columns.iterator();</span>
+<span class="fc" id="L111">        insertQuery.append(&quot;INSERT INTO &quot;).append(tableName);</span>
+
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        if(!columns.isEmpty()){</span>
+<span class="fc" id="L114">            insertQuery.append(&quot;(&quot;);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">            while (iter.hasNext()){</span>
+<span class="fc" id="L116">                insertQuery.append(iter.next());</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">                if(iter.hasNext())</span>
+<span class="fc" id="L118">                    insertQuery.append(&quot;, &quot;);</span>
+            }
+<span class="fc" id="L120">            insertQuery.append(&quot;)&quot;);</span>
+        }
+
+<span class="fc" id="L123">        iter = values.iterator();</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if(!values.isEmpty()){</span>
+<span class="fc" id="L125">            insertQuery.append(&quot; VALUES (&quot;);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">            while (iter.hasNext()){</span>
+<span class="fc" id="L127">                insertQuery.append(&quot;'&quot;).append(iter.next()).append(&quot;'&quot;);</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">                if(iter.hasNext())</span>
+<span class="fc" id="L129">                    insertQuery.append(&quot;, &quot;);</span>
+            }
+<span class="fc" id="L131">            insertQuery.append(&quot;);&quot;);</span>
+        }
+//        else{
+//            //TODO:Add implementation to insert default values in row
+//        }
+<span class="fc" id="L136">        return insertQuery.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

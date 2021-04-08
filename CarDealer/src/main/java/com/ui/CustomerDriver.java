@@ -1,7 +1,6 @@
 package com.ui;
 
 import com.Collection.CarHashSet;
-import com.Collection.OfferHashSet;
 import com.Collection.PaymentPlanHashSet;
 import com.Collection.PaymentsHashSet;
 import com.Model.Car;
@@ -41,6 +40,7 @@ public class CustomerDriver {
                 switch (userInput){
                     case 1:{
                         CarHashSet cars = carServices.getCars(0);
+                        menus.printCarsTable();
                         System.out.println(cars.toString());
 
                         boolean continueOffer = true;
@@ -64,7 +64,9 @@ public class CustomerDriver {
                                 }
                             }else if(userInput == 2 ){
                                 continueOffer = false;
-                            }else{
+                            }else if(userInput == 0){
+                                continueOffer = false;
+                            } else {
                                 System.out.println("Select only one of the options");
                             }
                         }while (continueOffer);
@@ -72,11 +74,12 @@ public class CustomerDriver {
                         break;
                     }
                     case 2:{
-                        //TODO: Refactor to show better view of cars owned
+
                         CarHashSet cars = carServices.getCars(user.getId());
-                        if(cars!=null && cars.Size()>0)
+                        if(cars!=null && cars.Size()>0) {
+                            menus.printCarsTable();
                             System.out.println(cars);
-                        else
+                        }else
                             System.out.println("No cars to show");
 
                         break;
@@ -90,9 +93,11 @@ public class CustomerDriver {
                         PaymentsHashSet payments = customerServices.getPayments(user.getId());
                         if(payments!=null && payments.Size()>0) {
                             System.out.println("--- Last 5 payments ---");
+                            menus.printPaymentsTable();
                             System.out.println(payments);
                             System.out.println("---  ---");
                         }else {
+                            System.out.println("\n--- ---");
                             System.out.println("No previous payments");
                             System.out.println("---  ---");
                         }
@@ -101,8 +106,10 @@ public class CustomerDriver {
                         if(scan.nextLine().equalsIgnoreCase("Y")){
                             PaymentPlanHashSet paymentsPlan = customerServices.getPaymentPlans(user.getId());
                             if(paymentsPlan!=null){
+                                menus.printPaymentPlanTable();
                                 System.out.println(paymentsPlan + "\n");
                                 System.out.println("Select payment plan to continue");
+                                System.out.println("Input 0 (zero) to exit:");
                                 userInput = scan.nextInt();
                                 if(paymentsPlan.getById(userInput) != null)
                                 if(customerServices.MakePayment(paymentsPlan.getById(userInput))){
@@ -118,8 +125,12 @@ public class CustomerDriver {
                         }
                         break;
                     }
-                    case 5:{
+                    case 0:{
                         dontExit = false;
+                        break;
+                    }
+                    default:{
+                        System.out.println("Input only one of the options");
                         break;
                     }
                 }

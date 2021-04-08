@@ -4,7 +4,7 @@ import com.Collection.OfferHashSet;
 import com.Collection.PaymentPlanHashSet;
 import com.Collection.PaymentsHashSet;
 import com.Model.*;
-import com.database.DataBaseServices;
+import com.database.DBHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +12,8 @@ import java.util.Scanner;
 
 public class CustomerServices {
     Scanner scan = new Scanner(System.in);
-    private final DataBaseServices DB = DataBaseServices.getInstance();
+    Menus menus = Menus.getInstance();
+    private final DBHandler DB = DBHandler.INSTANCE;
 
     private CustomerServices(){}
 
@@ -29,6 +30,7 @@ public class CustomerServices {
         float offer = 0f;
         int months =0;
 
+        menus.printCarsTable();
         System.out.println(car.toString());
         System.out.println("How much do you want to offer?");
         offer = scan.nextFloat();
@@ -76,20 +78,21 @@ public class CustomerServices {
                     }
                     current = offers.Next();
                 }
-
-                System.out.println("Offers Rejected\n");
+                System.out.println("Offers Rejected");
+                menus.printOffersTable();
                 System.out.println(rejected);
-                System.out.println("-----------------");
-                System.out.println("Offers Pending of review from the dealer\n");
+                System.out.println("Offers Pending of review from the dealer");
+                menus.printOffersTable();
                 System.out.println(pendingForReview);
-                System.out.println("-----------------");
-                System.out.println("Offers Accepted\n");
+                System.out.println("Offers Accepted");
+                menus.printOffersTable();
                 System.out.println(accepted);
-
-
             }else{
+                System.out.println("--- ---");
                 System.out.println("No offers to show");
+                System.out.println("--- ---\n");
             }
+            rs.beforeFirst();
 
         }catch(SQLException ex){
             ex.printStackTrace();
@@ -109,7 +112,7 @@ public class CustomerServices {
                         rs.getInt("car_serial_num"),rs.getDouble("payment_amount"),
                         rs.getDate("payment_date")));
             }
-
+            rs.beforeFirst();
             return payments;
 
         }catch(SQLException ex){
@@ -129,6 +132,7 @@ public class CustomerServices {
                         rs.getInt("car_serial_num"),rs.getDouble("monthly_payment"),
                         rs.getInt("total_months"),rs.getInt("months_left"),rs.getDate("purchase_date")));
             }
+            rs.beforeFirst();
             return paymentPlans;
         }catch (SQLException ex){
             ex.printStackTrace();

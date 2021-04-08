@@ -3,7 +3,7 @@ package com.ui;
 import com.Collection.OfferHashSet;
 import com.Model.Car;
 import com.Model.Offer;
-import com.database.DataBaseServices;
+import com.database.DBHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class EmployeeServices {
     Scanner scan = new Scanner(System.in);
-    private final DataBaseServices DB = DataBaseServices.getInstance();
+    private final DBHandler DB = DBHandler.INSTANCE;
 
 
     private EmployeeServices(){}
@@ -26,10 +26,9 @@ public class EmployeeServices {
     }
 
     public OfferHashSet getOffers(){
-        ResultSet rs = DB.FetchAllOffers();
-        OfferHashSet offers = new OfferHashSet();
-
         try{
+            ResultSet rs = DB.FetchAllOffers();
+            OfferHashSet offers = new OfferHashSet();
             while(rs.next()){
                 offers.Add(new Offer(rs.getInt("offer_id"),rs.getInt("user_id"),
                         rs.getInt("car_serial_num"), rs.getFloat("offer"),
@@ -37,9 +36,7 @@ public class EmployeeServices {
             }
 
             return offers;
-        }catch(SQLException ex){
-            ex.printStackTrace();
-        }catch(Exception ex){
+        } catch(Exception ex){
             ex.printStackTrace();
         }
 

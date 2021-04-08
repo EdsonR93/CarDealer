@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Select.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EdsonORM_P1</a> &gt; <a href="index.source.html" class="el_package">ORM.CRUD.QueryCreation</a> &gt; <span class="el_source">Select.java</span></div><h1>Select.java</h1><pre class="source lang-java linenums">package ORM.CRUD.QueryCreation;
+
+import ORM.Anotations.Column;
+import ORM.Anotations.ColumnNotRequired;
+import ORM.Anotations.Table;
+import ORM.CustomeExceptions.NoColumnsFoundException;
+import ORM.CustomeExceptions.NoTableFoundException;
+import ORM.CRUD.Interfaces.SelectQuery;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+public class Select implements SelectQuery&lt;Select&gt;{
+
+    private List&lt;String&gt; tableNames;
+    private List&lt;String&gt; columns;
+    private List&lt;String&gt; whereClauses;
+
+<span class="nc" id="L22">    public Select(){</span>
+<span class="nc" id="L23">        tableNames = new Vector&lt;&gt;();</span>
+<span class="nc" id="L24">        columns = new Vector&lt;&gt;();</span>
+<span class="nc" id="L25">        whereClauses = new Vector&lt;&gt;();</span>
+<span class="nc" id="L26">    }</span>
+
+    public Select(Object obj){
+<span class="nc" id="L29">        this();</span>
+<span class="nc" id="L30">        Class&lt;?&gt; cl = obj.getClass();</span>
+
+<span class="nc" id="L32">        Table table = cl.getAnnotation(Table.class);</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if(table!=null)</span>
+<span class="nc" id="L34">            setTableName(table.name());</span>
+
+<span class="nc" id="L36">        Field[] fields = cl.getDeclaredFields();</span>
+        Column col;
+        ColumnNotRequired notReqCol;
+
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        for(Field var : fields){</span>
+<span class="nc" id="L41">            var.setAccessible(true);</span>
+<span class="nc" id="L42">            col = var.getAnnotation(Column.class);</span>
+<span class="nc" id="L43">            notReqCol = var.getAnnotation(ColumnNotRequired.class);</span>
+<span class="nc bnc" id="L44" title="All 4 branches missed.">            if(col!=null &amp;&amp; notReqCol==null){</span>
+<span class="nc" id="L45">                setColumn(col.name());</span>
+            }
+        }
+<span class="nc" id="L48">    }</span>
+
+    @Override
+    synchronized public Select setTableName(String tableName){
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if(tableNames.isEmpty())</span>
+<span class="nc" id="L53">            tableNames.add(tableName);</span>
+
+<span class="nc" id="L55">        return this;</span>
+    }
+
+    @Override
+    synchronized public Select setColumn(String column){
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if(column!=null)</span>
+<span class="nc" id="L61">            columns.add(column);</span>
+
+<span class="nc" id="L63">        return this;</span>
+    }
+
+    @Override
+    synchronized public Select setColumns(String... columnsArray){
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        for (String col: columnsArray) {</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            if(col!=null)</span>
+<span class="nc" id="L70">                columns.add(col);</span>
+        }
+<span class="nc" id="L72">        return this;</span>
+    }
+
+    @Override
+    synchronized public Select setWhereClause(String clause){
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if(clause!=null)</span>
+<span class="nc" id="L78">            whereClauses.add(clause);</span>
+
+<span class="nc" id="L80">        return this;</span>
+    }
+
+    @Override
+    synchronized public Select and(){
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if(!whereClauses.isEmpty())</span>
+<span class="nc" id="L86">            whereClauses.add(&quot; AND &quot;);</span>
+<span class="nc" id="L87">        return this;</span>
+    }
+
+    @Override
+    synchronized public Select or(){
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if(!whereClauses.isEmpty())</span>
+<span class="nc" id="L93">            whereClauses.add(&quot; OR &quot;);</span>
+<span class="nc" id="L94">        return this;</span>
+    }
+
+
+    @Override
+    synchronized public String buildSelectStatement() throws NoColumnsFoundException, NoTableFoundException {
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if(columns.isEmpty())</span>
+<span class="nc" id="L101">            throw new NoColumnsFoundException();</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if(tableNames.isEmpty())</span>
+<span class="nc" id="L103">            throw new NoTableFoundException();</span>
+
+<span class="nc" id="L105">        StringBuilder select = new StringBuilder();</span>
+
+<span class="nc" id="L107">        select.append(&quot;SELECT &quot;);</span>
+<span class="nc" id="L108">        Iterator&lt;String&gt; iter = columns.iterator();</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        while (iter.hasNext()){</span>
+<span class="nc" id="L110">            select.append(iter.next());</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if(iter.hasNext())</span>
+<span class="nc" id="L112">               select.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc" id="L115">        select.append(&quot; FROM &quot;);</span>
+
+<span class="nc" id="L117">        iter = tableNames.iterator();</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        while (iter.hasNext()){</span>
+<span class="nc" id="L119">            select.append(iter.next());</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">            if(iter.hasNext())</span>
+<span class="nc" id="L121">                select.append(&quot;, &quot;);</span>
+        }
+
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        if(!whereClauses.isEmpty()){</span>
+<span class="nc" id="L125">            select.append(&quot; WHERE &quot;);</span>
+<span class="nc" id="L126">            iter = whereClauses.iterator();</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">            while (iter.hasNext()){</span>
+<span class="nc" id="L128">                select.append(iter.next());</span>
+            }
+        }
+
+
+<span class="nc" id="L133">        select.append(&quot;;&quot;);</span>
+
+<span class="nc" id="L135">        return select.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

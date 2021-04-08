@@ -1,0 +1,12 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+EdsonORM_P1,ORM.CustomeExceptions,NotSameAmountOfColumnAndValuesException,0,3,0,0,0,1,0,1,0,1
+EdsonORM_P1,ORM.CustomeExceptions,NoTableFoundException,0,3,0,0,0,1,0,1,0,1
+EdsonORM_P1,ORM.CustomeExceptions,NoWhereClauseFoundException,0,3,0,0,0,1,0,1,0,1
+EdsonORM_P1,ORM.CustomeExceptions,NoColumnsFoundException,3,0,0,0,1,0,1,0,1,0
+EdsonORM_P1,ORM.CustomeExceptions,NoValuesFoundException,3,0,0,0,1,0,1,0,1,0
+EdsonORM_P1,ORM.CRUD.DatabaseServices,QueryHandler,36,0,0,0,8,0,5,0,5,0
+EdsonORM_P1,ORM.CRUD.QueryCreation,Insert,0,290,4,46,0,61,4,32,0,11
+EdsonORM_P1,ORM.CRUD.QueryCreation,Update,240,0,40,0,57,0,29,0,9,0
+EdsonORM_P1,ORM.CRUD.QueryCreation,Select,252,0,38,0,61,0,28,0,9,0
+EdsonORM_P1,ORM.CRUD.QueryCreation,QueryBuilder,607,0,102,0,128,0,65,0,14,0
+EdsonORM_P1,ORM.CRUD.QueryCreation,Delete,0,116,3,17,0,28,3,15,0,8

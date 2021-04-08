@@ -1,17 +1,32 @@
 package com.Model;
 
+import ORM.Anotations.Column;
+import ORM.Anotations.ColumnNotRequired;
+import ORM.Anotations.Table;
+
 import java.util.Arrays;
 
+@Table(name = "Users")
 public class User {
-
+    @Column(name = "user_id")
+    @ColumnNotRequired
     private int id;
+
+    @Column(name = "is_employee")
+    @ColumnNotRequired
     private boolean isEmployee = false;
+
+    @Column(name = "username")
     private String Username;
+
+    @Column(name = "password")
     private String Password;
+
+    @Column(name = "name")
     private String Name;
+
+    @Column(name = "lastname")
     private String Lastname;
-    //TODO: Is it really necessary to store te cars he owned?
-    //private Car[] CarsOwned;
 
     public User(String username, String password, String name, String lastname) {
         this.Username = username;
@@ -74,13 +89,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", isEmployee=" + isEmployee +
-                ", Username='" + Username + '\'' +
-                ", Password='" + Password + '\'' +
-                ", Name='" + Name + '\'' +
-                ", Lastname='" + Lastname + '\'' +
-                '}';
+        return String.format("%10s\t%10s\t%10s\t%10s\t%10s\t%10s\t",id,isEmployee,Name,Lastname,Username,Password);
     }
 }

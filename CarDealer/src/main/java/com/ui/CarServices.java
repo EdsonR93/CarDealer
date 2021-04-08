@@ -3,7 +3,9 @@ package com.ui;
 import com.Collection.CarHashSet;
 import com.Model.Car;
 import com.Model.User;
-import com.database.DataBaseServices;
+import com.database.DBHandler;
+import com.database.DBServices;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -11,7 +13,7 @@ import java.util.Scanner;
 
 public class CarServices {
     Scanner scan = new Scanner(System.in);
-    private final DataBaseServices DB = DataBaseServices.getInstance();
+    private final DBHandler DB = DBHandler.INSTANCE;
 
     private CarServices(){}
     private static CarServices instance;
@@ -29,7 +31,7 @@ public class CarServices {
         int serialNum, model, miles;
         float price;
 
-        System.out.println("Car model:");
+        System.out.println("\nCar model:");
         model = scan.nextInt();
         scan.nextLine();
         System.out.println("Car brand:");
@@ -58,20 +60,22 @@ public class CarServices {
     }
 
     public CarHashSet getCars(int id){
-        ResultSet rs = DB.FetchAllCars(id);
+        ResultSet rs =  DB.FetchAllCars(id);
         CarHashSet cars = new CarHashSet();
 
         try{
-            while(rs.next()){
-                cars.Add(new Car(rs.getInt("serial_num"),rs.getInt("model"),rs.getString("brand"),
-                        rs.getString("make"), rs.getString("color"),rs.getInt("miles"),
-                        rs.getFloat("price"), rs.getInt("owner_id")));
+            if(rs!=null) {
+                while (rs.next()) {
+                    cars.Add(new Car(rs.getInt("serial_num"), rs.getInt("model"), rs.getString("brand"),
+                            rs.getString("make"), rs.getString("color"), rs.getInt("miles"),
+                            rs.getFloat("price"), rs.getInt("owner_id")));
 
+                }
+            }else{
+                System.out.println("No cars to show");
             }
-
+            rs.beforeFirst();
             return cars;
-        }catch(SQLException ex){
-            ex.printStackTrace();
         }catch(Exception ex){
             ex.printStackTrace();
         }
